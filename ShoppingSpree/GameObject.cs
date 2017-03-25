@@ -17,8 +17,16 @@ namespace ShoppingSpree
         private Quaternion angVel;
         private float scale = 1;
         private Model model;
-        private BoundingBoxCollider collider;
+        private BoundingBoxGroupCollider collider;
         private bool immovable = false;
+
+        public float Friction
+        {
+            get
+            {
+                return .9f;
+            }
+        }
 
         public GameObject()
         {
@@ -39,7 +47,7 @@ namespace ShoppingSpree
             this.model = model;
 
             if(model != null)
-                collider = new BoundingBoxCollider(this);
+                collider = new BoundingBoxGroupCollider(this, new BoundingBox[0]);
         }
 
         public virtual void Update(GameTime gameTime)
@@ -52,7 +60,7 @@ namespace ShoppingSpree
                 rotation = Quaternion.Lerp(rotation, rotation * angVel, (float)gameTime.ElapsedGameTime.TotalSeconds);
 
                 //apply drag
-                angVel = Quaternion.Lerp(angVel, Quaternion.Identity, .0001f);
+                angVel = Quaternion.Lerp(angVel, Quaternion.Identity, .01f);
                 
             }
             collider.Update();
@@ -84,10 +92,6 @@ namespace ShoppingSpree
             {
                 Debug.WriteLine(model);
             }
-
-            //draw bounding box
-
-            //BoundingBoxOverlay.Draw(Collider.bb, GraphicsDevice, cam);
         }
 
         public Vector3 Pos
@@ -121,7 +125,7 @@ namespace ShoppingSpree
             get { return model; }
             set { model = value; }
         }
-        public BoundingBoxCollider Collider
+        public BoundingBoxGroupCollider Collider
         {
             get { return collider; }
             set { collider = value; }

@@ -7,65 +7,15 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace ShoppingSpree
 {
-    public class BoundingBoxCollider
+    public class BoundingBoxCollider : Collider
     {
-        GameObject gameObject;
-        Vector3[] rawVerts;
-        Vector3[] verts;
-        public BoundingBox bb;
-
         public bool EnableBounce = true;
         public bool EnableRotate = true;
 
-        public BoundingBoxCollider(GameObject g)
+        public BoundingBoxCollider(GameObject g) : base(g)
         {
-            gameObject = g;
             extractVerts();
             Update();
-        }
-        public void extractVerts()
-        {
-            int numVerts = 0;
-            int offset = 0;
-            foreach (ModelMesh mesh in gameObject.Model.Meshes)
-            {
-
-                //there may be multiple parts ... different materials etc...
-                foreach (ModelMeshPart part in mesh.MeshParts)
-                {
-                    numVerts += part.NumVertices;
-                }
-            }
-            
-            rawVerts = new Vector3[numVerts];
-            verts = new Vector3[numVerts];
-            foreach (ModelMesh mesh in gameObject.Model.Meshes)
-            {
-
-                //there may be multiple parts ... different materials etc...
-                foreach (ModelMeshPart part in mesh.MeshParts)
-                {
-                    int stride = part.VertexBuffer.VertexDeclaration.VertexStride;
-
-                    //lets get the array of Vector3...  this will be an interlaced list of Position Normal Texture Position Normal Texture ....
-                    Vector3[] tempVerts = new Vector3[part.NumVertices];
-
-                    part.VertexBuffer.GetData(part.VertexOffset * stride, tempVerts, 0, tempVerts.Length, stride);
-
-                    //the array of vertices are unique.  If a triangle reuses an exisiting vertex, it will not "reappear" in the list
-                    //therefore we need to make a copy of each vertex used in every triangle...
-                    ushort[] indices = new ushort[part.IndexBuffer.IndexCount];
-                    part.IndexBuffer.GetData<ushort>(indices);
-
-                    for(int i = 0; i < tempVerts.Length; i++) {
-                        rawVerts[offset] = tempVerts[i];
-                        offset++;
-                    }
-                }
-            }
-
-            // dont have bounding boxes with zero dimenstions
-            //bb = BoundingBox.CreateMerged(bb, new BoundingBox(bb.Min - new Vector3(-0.001f), bb.Max + new Vector3(0.001f)));
         }
 
         //use new world transform
@@ -82,7 +32,7 @@ namespace ShoppingSpree
             return Math.Sign(n) * Math.Floor(Math.Abs(n));
         }
 
-        public bool checkCollision(GameObject e)
+        public override bool checkCollision(GameObject e)
         {
             //A quad is defined by 6 vertices (3 per triangle).  Since we assume both triangles are on the
             // same plane, it is not required to check the collision with the other triangle, so skip by 6.
@@ -121,7 +71,6 @@ namespace ShoppingSpree
                         (float)(greatestMagInt(scaledToEnemy.Z / maxDim))
                     )
                 );
-                //n = Vector3.Normalize(toEnemy);
 
 
                 // box analog of myRad + eRad - (center - e.center);
@@ -129,11 +78,15 @@ namespace ShoppingSpree
                 Vector3 dist = Math.Abs(Vector3.Dot((myDims + enemyDims) / 2, n)) * n - Vector3.Dot(toEnemy, n) * n;
 
                 e.Pos = e.Pos + dist * 1.01f ;
-                /*if (gameObject.Model.Meshes[0].Name != "Plane")
+
+                if (e.Collider.EnableRotate)
                 {
-                    Console.WriteLine(dist);
-                    Console.WriteLine(n);
-                }*/
+                    // do some random rotations for fun
+                    Random r = new Random();
+                    Vector3 axis = Vector3.Normalize(Vector3.Cross(toEnemy, n));
+                    if (axis.Length() > 0)
+                        e.AngVel *= Quaternion.CreateFromAxisAngle(axis, ((float)r.NextDouble() - .5f) / 4);
+                }
 
                 if (e.Collider.EnableBounce)
                 {
@@ -143,8 +96,6 @@ namespace ShoppingSpree
                              * n + V;
                     if (!float.IsNaN(e.Vel.Length()) && !float.IsNaN(V.X))
                         e.Vel = e.Vel.Length() * V * .8f;
-                    /*if(gameObject.Model.Meshes[0].Name != "Plane")
-                        Console.WriteLine(e.Model.Meshes[0].Name + " bounced on " + gameObject.Model.Meshes[0].Name);*/
                 }
                 collision = true;
                 //return collision;

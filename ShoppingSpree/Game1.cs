@@ -33,6 +33,7 @@ namespace ShoppingSpree
 
         // game specific vars
         GameObject floor, cart;
+        GameObject[] walls = new GameObject[4];
 
         public Game1()
         {
@@ -74,32 +75,97 @@ namespace ShoppingSpree
             // Add game specific objectss
             floor = new GameObject(new Vector3(0, -1f, 0), Quaternion.Identity, 1f, models["floor"]);
             floor.Immovable = true;
+            
+            //walls
+            walls[0] = new GameObject(new Vector3(-800f, 800, 0), Quaternion.CreateFromAxisAngle(Vector3.UnitZ, -MathHelper.PiOver2), 1f, models["floor"]);
+            walls[0].Immovable = true;
+            walls[1] = new GameObject(new Vector3(800f, 800, 0), Quaternion.CreateFromAxisAngle(Vector3.UnitZ, MathHelper.PiOver2), 1f, models["floor"]);
+            walls[1].Immovable = true;
+            walls[2] = new GameObject(new Vector3(0, 800, 800), Quaternion.CreateFromAxisAngle(Vector3.UnitX, -MathHelper.PiOver2), 1f, models["floor"]);
+            walls[2].Immovable = true;
+            walls[3] = new GameObject(new Vector3(0, 800, -800), Quaternion.CreateFromAxisAngle(Vector3.UnitX, MathHelper.PiOver2), 1f, models["floor"]);
+            walls[3].Immovable = true;
 
 
             cart = new GameObject(new Vector3(0, .1f, 1), Quaternion.Identity, .01f, models["cart"]);
 
             //cart.Collider.EnableBounce = false;
             cart.Collider.EnableRotate = false;
+            cart.Collider.UseMeshBoundingBox = false;
+            cart.Collider.BBGroup = new BoundingBox[]{ // construct collision boxes for cart
+                new BoundingBox(new Vector3(-2f, 0, -1), new Vector3(2, .8f, 6.5f)),
+                new BoundingBox(new Vector3(-2f, .8f, -1), new Vector3(-1.5f, 3f, 6.5f)),
+                new BoundingBox(new Vector3(1.5f, .8f, -1), new Vector3(2f, 3f, 6.5f)),
+                new BoundingBox(new Vector3(-1.5f, .8f, -1), new Vector3(1.5f, 3f, -.5f)),
+                new BoundingBox(new Vector3(-1.5f, .8f, 5.5f), new Vector3(1.5f, 3f, 6.5f))
+            };
 
-            for (int i = 6; i < 100; i++)
+
+
+            for (int shelfno = 0; shelfno < 3; shelfno++)
             {
-                gameObjects.Add(new GameObject(new Vector3(2, 2*i, 1), Quaternion.Identity, 0.01f, models["cerealBox"]));
-            }
-
-            for (int i = 0; i < 10; i++)
-            {
-                GameObject shelf = new GameObject(new Vector3(10, 2.5f, 10 * i), Quaternion.CreateFromAxisAngle(Vector3.Up, MathHelper.Pi), 0.01f, models["shelf"]);
-                shelf.Immovable = true;
-
+                //add shelf
+                GameObject shelf = new GameObject(new Vector3(5, 2.5f, 10 * shelfno), Quaternion.CreateFromAxisAngle(Vector3.Up, MathHelper.Pi), 0.01f, models["shelf"]);
+                shelf.Collider.UseMeshBoundingBox = false;
+                shelf.Collider.EnableRotate = false;
+                BoundingBox[] shelfBBs = new BoundingBox[]{
+                    new BoundingBox(new Vector3(-1, -2.55f, -2.7f), new Vector3(1, -2.35f, 2.8f)),
+                    new BoundingBox(new Vector3(-1, -1.2f, -2.7f), new Vector3(1, -.95f, 2.8f)),
+                    new BoundingBox(new Vector3(-1, 0f, -2.7f), new Vector3(1, .3f, 2.8f)),
+                    new BoundingBox(new Vector3(-1, 1.3f, -2.7f), new Vector3(1, 1.5f, 2.8f)),
+                    new BoundingBox(new Vector3(.2f, -3f, -2.7f), new Vector3(.9f, 2.2f, 2.8f)),
+                };
+                shelf.Collider.BBGroup = shelfBBs;
                 shelves.Add(shelf);
+
+                GameObject shelf2 = new GameObject(new Vector3(-5, 2.5f, 10 * shelfno), Quaternion.Identity, 0.01f, models["shelf"]);
+                shelf2.Collider.UseMeshBoundingBox = false;
+                shelf2.Collider.EnableRotate = false;
+                BoundingBox[] shelf2BBs = new BoundingBox[]{
+                    new BoundingBox(new Vector3(-1, -2.55f, -2.7f), new Vector3(1, -2.35f, 2.8f)),
+                    new BoundingBox(new Vector3(-1, -1.2f, -2.7f), new Vector3(1, -.95f, 2.8f)),
+                    new BoundingBox(new Vector3(-1, 0f, -2.7f), new Vector3(1, .3f, 2.8f)),
+                    new BoundingBox(new Vector3(-1, 1.3f, -2.7f), new Vector3(1, 1.5f, 2.8f)),
+                    new BoundingBox(new Vector3(-.2f, -3f, -2.7f), new Vector3(-.9f, 2.2f, 2.8f)),
+                };
+                shelf2.Collider.BBGroup = shelf2BBs;
+                shelves.Add(shelf2);
+
+                for (int shelfLevels = 0; shelfLevels < 4; shelfLevels++)
+                {
+                    BoundingBox s = shelfBBs[shelfLevels];
+                    //add boxes on shelf
+                    for (int col = 0; col < 4; col++)
+                    {
+                        GameObject box = new GameObject(
+                            shelf.Pos +
+                            new Vector3(s.Min.X, s.Max.Y, s.Min.Z) +
+                            new Vector3(.1f, 0, col * 1.5f + .5f),
+                            Quaternion.Identity, 0.01f, models["cerealBox"]
+                        );
+                        box.Collider.EnableRotate = false;
+                        gameObjects.Add(box);
+
+
+                        GameObject box2 = new GameObject(
+                            shelf2.Pos +
+                            new Vector3(s.Max.X, s.Max.Y, s.Min.Z) +
+                            new Vector3(-.1f, .1f, col * 1.5f + .5f),
+                            Quaternion.Identity, 0.01f, models["cerealBox"]
+                        );
+                        box2.Collider.EnableRotate = false;
+                        gameObjects.Add(box2);
+                    }
+                }
             }
+            /*
             for (int i = 0; i < 10; i++)
             {
                 GameObject shelf = new GameObject(new Vector3(-10, 2.5f, 10 * i), Quaternion.Identity, 0.01f, models["shelf"]);
                 shelf.Immovable = true;
 
                 shelves.Add(shelf);
-            }
+            }*/
 
             // generic games
             cam = new Camera(new Vector3(0, 0, 0), MathHelper.Pi);
@@ -117,7 +183,7 @@ namespace ShoppingSpree
             // TODO: Unload any non ContentManager content here
         }
 
-        Boolean escapeDown = false;
+        Boolean spaceDown = false;
         Boolean leftClickDown = false;
         Boolean rightClickDown = false;
         Boolean eKeyDown = false;
@@ -141,14 +207,15 @@ namespace ShoppingSpree
             {
                 g.Update(gameTime);
             }
+            foreach (GameObject s in shelves)
+            {
+                s.Update(gameTime);
+            }
 
             Point changeInMouse = windowCenter - Mouse.GetState().Position;
 
-            cart.Rotation *= Quaternion.CreateFromAxisAngle(Vector3.Up, changeInMouse.X * sensitivity);
-            //Quaternion r = cart.Rotation;
+            //cart.Rotation *= Quaternion.CreateFromAxisAngle(Vector3.Up, changeInMouse.X * sensitivity);
             cart.Update(gameTime);
-            //cart.Rotation = r;
-            //cart.Pos = new Vector3(cart.Pos.X, 5, cart.Pos.Z);
 
             #region Update clock
             /*
@@ -263,23 +330,19 @@ namespace ShoppingSpree
 
 
             floor.Collider.checkCollision(cart);
-            //collide with floor and cart
-            foreach (GameObject box in gameObjects)
-            {
-
-                float angVelRadians = 2 * (float)Math.Atan2(box.AngVel.ToVector4().Length(), box.AngVel.W);
-                //if (box.Vel.Length() > 0.001 || angVelRadians > 0.001)  // prune objects that arn't moving
-                    floor.Collider.checkCollision(box);
-
-                cart.Collider.checkCollision(box);
-            }
             
+            // collide shelf with floor and shelf
             foreach (GameObject shelf in shelves)
             {
-                shelf.Collider.checkCollision(cart);
+
+                floor.Collider.checkCollision(shelf);
+                if (cart.Collider.checkCollision(shelf))
+                {
+                    
+                }
             }
             
-            //collide with boxes
+            //collide boxes with boxes
            foreach (GameObject box1 in gameObjects)
             {
                 foreach (GameObject box2 in gameObjects)
@@ -290,34 +353,62 @@ namespace ShoppingSpree
                     }
                 }
             }
+            //collide boxes with floor, shelf and cart
+            foreach (GameObject box in gameObjects)
+            {
+                floor.Collider.checkCollision(box);
+                foreach (GameObject shelf in shelves)
+                {
+                    shelf.Collider.checkCollision(box);
+                }
+                //enable rotation when cart collides with box
+                bool boxRotateState = box.Collider.EnableRotate;
+                box.Collider.EnableRotate = true;
+                cart.Collider.checkCollision(box);
+                box.Collider.EnableRotate = boxRotateState;
+            }
 
             #region move player
+
 
             Vector3 forward = Vector3.Transform(Vector3.UnitZ, Matrix.CreateFromQuaternion(cart.Rotation));
             Vector3 right = Vector3.Cross(forward, Vector3.Up);
 
-            Vector3 movement = Vector3.Zero;
-
-            if (Keyboard.GetState().IsKeyDown(Keys.A))
-                movement -= right;
-            else if (Keyboard.GetState().IsKeyDown(Keys.D))
-                movement += right;
-            if (Keyboard.GetState().IsKeyDown(Keys.W))
+            if (Keyboard.GetState().IsKeyDown(Keys.Space))
             {
-                movement += forward;
+                if (!spaceDown)
+                {
+                    cart.Vel = forward * 35;
+                    cart.Pos += Vector3.Up*.02f;
+                    spaceDown = true;
+                }
+                cam.Pos = cart.Pos + forward * -1 + new Vector3(0, 6, 0);
             }
-            else if (Keyboard.GetState().IsKeyDown(Keys.S))
-                movement -= forward;
-
-            if (movement.Length() > 0)
+            else
             {
-                movement.Normalize();
-                movement *= .3f;
-                if (Keyboard.GetState().IsKeyDown(Keys.LeftShift))
-                    movement *= 2;//shift to run
-                cart.Pos += movement;
+                spaceDown = false;
+                Vector3 movement = Vector3.Zero;
+
+                if (Keyboard.GetState().IsKeyDown(Keys.A))
+                    movement -= right;
+                else if (Keyboard.GetState().IsKeyDown(Keys.D))
+                    movement += right;
+                if (Keyboard.GetState().IsKeyDown(Keys.W))
+                {
+                    movement += forward;
+                }
+                else if (Keyboard.GetState().IsKeyDown(Keys.S))
+                    movement -= forward;
+
+                if (movement.Length() > 0)
+                {
+                    movement.Normalize();
+                    movement *= 3f;
+                    cart.Vel += movement;
+                    cart.Vel = Vector3.Normalize(cart.Vel) * MathHelper.Min(cart.Vel.Length(), 10);
+                }
+                cam.Pos = cart.Pos + forward * -2 + new Vector3(0, 5, 0);
             }
-            cam.Pos = cart.Pos + forward * -2 + new Vector3(0, 5, 0);
             #endregion
 
 
@@ -339,15 +430,30 @@ namespace ShoppingSpree
             foreach (GameObject s in shelves)
             {
                 s.Draw(gameTime, cam, lamp);
+
+                //draw bounding box
+                /*foreach (BoundingBox bb in s.Collider.BBGroup)
+                {
+                    BoundingBoxOverlay.Draw(bb, GraphicsDevice, cam);
+                }*/
             }
             floor.Draw(gameTime, cam, lamp);
+            foreach (GameObject w in walls)
+            {
+               // w.Draw(gameTime, cam, lamp);
+            }
             cart.Draw(gameTime, cam, lamp);
 
+            foreach (BoundingBox bb in cart.Collider.BBGroup)
+            {
+                BoundingBoxOverlay.Draw(bb, GraphicsDevice, cam);
+            }
             //draw bounding sphere
             //Vector3 cartCenter = (cart.Collider.bb.Max + cart.Collider.bb.Min) / 2;
             //float cartRad = (cart.Collider.bb.Max - cart.Collider.bb.Min).Length() / 2;
             //BoundingSphereOverlay.Draw(cartCenter, cartRad, GraphicsDevice, cam);
-            
+
+
 
             base.Draw(gameTime);
         }
