@@ -68,6 +68,7 @@ namespace ShoppingSpree
 
         public virtual void Draw(GameTime gameTime, Camera cam, Lamp lamp)
         {
+            Lamp lamp2 = new Lamp(new Vector3(-30, 30, -30));
             model.Draw(World, cam.getViewMatrix(), cam.getProjMatrix());
             //Matrix.CreateScale(scale)*Matrix.CreateFromQuaternion(quaternion)*Matrix.CreateTranslation(position)
             // null for empty game object
@@ -83,7 +84,8 @@ namespace ShoppingSpree
                         e.EnableDefaultLighting();
 
                         e.DirectionalLight0.Direction = Vector3.Normalize(Pos - lamp.Pos);
-                        e.DirectionalLight1.Enabled = false;
+                        e.DirectionalLight1.Direction = Vector3.Normalize(Pos - lamp2.Pos);
+                        e.DirectionalLight1.DiffuseColor = Color.White.ToVector3();
                         e.DirectionalLight2.Enabled = false;
                     }
                     //mesh.Draw();

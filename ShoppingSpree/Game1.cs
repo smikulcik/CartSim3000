@@ -33,7 +33,7 @@ namespace ShoppingSpree
 
         // game specific vars
         GameObject floor, cart;
-        GameObject[] walls = new GameObject[4];
+        GameObject walls;
 
         public Game1()
         {
@@ -65,8 +65,9 @@ namespace ShoppingSpree
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            
+
             models["floor"] = Content.Load<Model>("floor");
+            models["walls"] = Content.Load<Model>("walls");
             models["cerealBox"] = Content.Load<Model>("cerealBox");
             models["cart"] = Content.Load<Model>("cart");
             models["shelf"] = Content.Load<Model>("shelf");
@@ -76,15 +77,8 @@ namespace ShoppingSpree
             floor = new GameObject(new Vector3(0, -1f, 0), Quaternion.Identity, 1f, models["floor"]);
             floor.Immovable = true;
             
-            //walls
-            walls[0] = new GameObject(new Vector3(-800f, 800, 0), Quaternion.CreateFromAxisAngle(Vector3.UnitZ, -MathHelper.PiOver2), 1f, models["floor"]);
-            walls[0].Immovable = true;
-            walls[1] = new GameObject(new Vector3(800f, 800, 0), Quaternion.CreateFromAxisAngle(Vector3.UnitZ, MathHelper.PiOver2), 1f, models["floor"]);
-            walls[1].Immovable = true;
-            walls[2] = new GameObject(new Vector3(0, 800, 800), Quaternion.CreateFromAxisAngle(Vector3.UnitX, -MathHelper.PiOver2), 1f, models["floor"]);
-            walls[2].Immovable = true;
-            walls[3] = new GameObject(new Vector3(0, 800, -800), Quaternion.CreateFromAxisAngle(Vector3.UnitX, MathHelper.PiOver2), 1f, models["floor"]);
-            walls[3].Immovable = true;
+            walls = new GameObject(new Vector3(0, 0, 0), Quaternion.Identity, .5f, models["walls"]);
+            Console.WriteLine(walls.Collider.bb);
 
 
             cart = new GameObject(new Vector3(0, .1f, 1), Quaternion.Identity, .01f, models["cart"]);
@@ -102,7 +96,7 @@ namespace ShoppingSpree
 
 
 
-            for (int shelfno = 0; shelfno < 3; shelfno++)
+            for (int shelfno = 0; shelfno < 4; shelfno++)
             {
                 //add shelf
                 GameObject shelf = new GameObject(new Vector3(5, 2.5f, 10 * shelfno), Quaternion.CreateFromAxisAngle(Vector3.Up, MathHelper.Pi), 0.01f, models["shelf"]);
@@ -202,7 +196,9 @@ namespace ShoppingSpree
                 Exit();
 
 
-            //update world
+            Point changeInMouse = windowCenter - Mouse.GetState().Position;
+            
+            #region  update world
             foreach (GameObject g in gameObjects)
             {
                 g.Update(gameTime);
@@ -211,8 +207,7 @@ namespace ShoppingSpree
             {
                 s.Update(gameTime);
             }
-
-            Point changeInMouse = windowCenter - Mouse.GetState().Position;
+            #endregion
 
             //cart.Rotation *= Quaternion.CreateFromAxisAngle(Vector3.Up, changeInMouse.X * sensitivity);
             cart.Update(gameTime);
@@ -328,9 +323,19 @@ namespace ShoppingSpree
             }
             #endregion
 
-
+            #region Handle Collisions
             floor.Collider.checkCollision(cart);
-            
+
+            //handle collisions with the walls
+            if (cart.Pos.X < -38)
+                cart.Pos = new Vector3(-38, cart.Pos.Y, cart.Pos.Z);
+            if (cart.Pos.X > 38)
+                cart.Pos = new Vector3(38, cart.Pos.Y, cart.Pos.Z);
+            if (cart.Pos.Z < -35)
+                cart.Pos = new Vector3(cart.Pos.X, cart.Pos.Y, -35);
+            if (cart.Pos.Z > 34)
+                cart.Pos = new Vector3(cart.Pos.X, cart.Pos.Y, 34);
+
             // collide shelf with floor and shelf
             foreach (GameObject shelf in shelves)
             {
@@ -367,6 +372,7 @@ namespace ShoppingSpree
                 cart.Collider.checkCollision(box);
                 box.Collider.EnableRotate = boxRotateState;
             }
+            #endregion
 
             #region move player
 
@@ -438,16 +444,14 @@ namespace ShoppingSpree
                 }*/
             }
             floor.Draw(gameTime, cam, lamp);
-            foreach (GameObject w in walls)
-            {
-               // w.Draw(gameTime, cam, lamp);
-            }
+
+            walls.Draw(gameTime, cam, lamp);
             cart.Draw(gameTime, cam, lamp);
 
-            foreach (BoundingBox bb in cart.Collider.BBGroup)
+            /*foreach (BoundingBox bb in cart.Collider.BBGroup)
             {
                 BoundingBoxOverlay.Draw(bb, GraphicsDevice, cam);
-            }
+            }*/
             //draw bounding sphere
             //Vector3 cartCenter = (cart.Collider.bb.Max + cart.Collider.bb.Min) / 2;
             //float cartRad = (cart.Collider.bb.Max - cart.Collider.bb.Min).Length() / 2;
