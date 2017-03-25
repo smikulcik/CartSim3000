@@ -13,8 +13,8 @@ namespace ShoppingSpree
     /// </summary>
     public class Lamp : GameObject
     {
-        public Lamp(Vector3 position, float rotation, float scale)
-            : base(position, rotation, scale, null)
+        public Lamp(Vector3 position)
+            : base(position, Quaternion.Identity, 1f, null)
         {
         }
 
@@ -25,7 +25,7 @@ namespace ShoppingSpree
         public override void Draw(GameTime gameTime, Camera cam, Lamp lamp)
         {
 
-            Game1.Models["earth"].Draw(Matrix.CreateTranslation(Pos), cam.getViewMatrix(), cam.getProjMatrix());
+            //Game1.Models["earth"].Draw(Matrix.CreateTranslation(Pos), cam.getViewMatrix(), cam.getProjMatrix());
         }
     }
 }

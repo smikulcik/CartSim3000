@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ShoppingSpree
 {
-    public class Camera
+    public class Camera: GameObject
     {
         /// <summary>
         /// field of view (radians)
@@ -27,50 +27,26 @@ namespace ShoppingSpree
         float farClip = 3000.0f;
 
         /// <summary>
-        /// The 3D position of the camera relative to the target
-        /// </summary>
-        Vector3 position;
-
-        /// <summary>
-        /// camera rotation around target
-        /// </summary>
-        float rotX, rotY;
-
-
-        /// <summary>
         /// Target that camera is looking at
         /// </summary>
-        GameObject target;
+        float rotX = 0;
+        float rotY = 0;
 
-        public Camera()
+        public Camera() 
         {
-            position = new Vector3(0, 10, -10);
-            fov = MathHelper.PiOver4;
-            rotY = 0;
-            rotX = 0;
+            fov = MathHelper.PiOver2;
         }
-
-        public Vector3 getPos()
+        public Camera(Vector3 position, float rotX) : base(position, Quaternion.CreateFromYawPitchRoll(rotX, 0, 0), 1f, null)
         {
-            return (
-                Vector3.Transform(
-                    position,
-                    Matrix.CreateRotationX(rotX) *
-                    Matrix.CreateRotationY(rotY)
-                ) + target.Pos
-            );
+            this.rotX = rotX;
+            fov = MathHelper.PiOver2;
         }
 
         public Matrix getViewMatrix()
         {
-            Vector3 camPos = getPos();
             // cam pos, target pos, up direction
-            return Matrix.CreateLookAt(
-                camPos,
-                target.Pos,
-                Vector3.Up);
+            return Matrix.CreateLookAt(Pos, Pos + Vector3.Transform(Vector3.Forward, Rotation), Vector3.Up);
         }
-
         public Matrix getProjMatrix()
         {
             return Matrix.CreatePerspectiveFieldOfView(
@@ -81,39 +57,17 @@ namespace ShoppingSpree
             );
         }
 
-        public Vector3 getLookAt()
-        {
-            Vector3 lookAt = target.Pos - getPos();
-            lookAt.Normalize();
-
-            return lookAt;
-        }
-
         public void MoveCamera(Vector2 byHowMuch)
         {
-            rotY += byHowMuch.X;
-            rotX += -1 * byHowMuch.Y;
-            rotX = MathHelper.Clamp(
-                rotX,
-                -1.65f,
+            rotX += byHowMuch.X;
+            rotY += byHowMuch.Y;
+            rotY = MathHelper.Clamp(
+                rotY,
+                -1.25f,
                 .520f);
+            Rotation = Quaternion.CreateFromYawPitchRoll(rotX, rotY, 0);
         }
-
-
-
-        //getters and setters
-        public Vector3 Position
-        {
-            get { return position; }
-            set { position = value; }
-        }
-
-        public GameObject Target
-        {
-            get { return target; }
-            set { target = value; }
-        }
-
+        
         public float RotX
         {
             get { return rotX; }

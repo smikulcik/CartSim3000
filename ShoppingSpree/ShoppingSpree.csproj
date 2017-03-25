@@ -38,10 +38,14 @@
     <ApplicationIcon>Icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="BoundingBoxCollider.cs" />
+    <Compile Include="BoundingBoxOverlay.cs" />
+    <Compile Include="BoundingSphereOverlay.cs" />
     <Compile Include="Camera.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="GameObject.cs" />
     <Compile Include="Lamp.cs" />
+    <Compile Include="MeshCollider.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
