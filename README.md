@@ -1,4 +1,5 @@
-#Shopping Spree
+Shopping Spree
+---
 
 Zoom your buggy as fast as you can through the store aisles.  
 Collect as many items in your cart before the time runs out.
@@ -16,7 +17,8 @@ Rather, this game provides an environment for each player to
 explore their repressed desire to run as fast as he can and
 jump on the back of a moving shopping cart.
  
-#Controls
+Controls
+---
 
  - W/S - Move buggy forward and backwards
  - Mouse – Look up and down and turn buggy side to side
