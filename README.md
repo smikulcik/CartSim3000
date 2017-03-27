@@ -1,6 +1,8 @@
 Shopping Spree
 ---
 
+![Shopping Spree Concept Art](/graphic.png)
+
 Zoom your buggy as fast as you can through the store aisles.  
 Collect as many items in your cart before the time runs out.
 Shopping Spree! is a shopping cart simulator where the
