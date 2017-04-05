@@ -108,3 +108,10 @@
 /processorParam:TextureFormat=Compressed
 /build:walls.fbx
 
+#begin LetterFont.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:LetterFont.spritefont
+

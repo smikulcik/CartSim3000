@@ -31,9 +31,14 @@ namespace ShoppingSpree
         List<GameObject> gameObjects;
         List<GameObject> shelves;
 
+        SpriteFont letterFont;
+
         // game specific vars
         GameObject floor, cart;
         GameObject walls;
+
+        // state vars
+        float timeLeft = 30f;
 
         public Game1()
         {
@@ -65,6 +70,8 @@ namespace ShoppingSpree
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
+            
+            letterFont = Content.Load<SpriteFont>("LetterFont");
 
             models["floor"] = Content.Load<Model>("floor");
             models["walls"] = Content.Load<Model>("walls");
@@ -197,7 +204,14 @@ namespace ShoppingSpree
 
 
             Point changeInMouse = windowCenter - Mouse.GetState().Position;
-            
+
+            if(timeLeft <= 0)
+            {
+                timeLeft = 0f;
+                return;
+            }
+            timeLeft -= (float)gameTime.ElapsedGameTime.TotalSeconds;
+
             #region  update world
             foreach (GameObject g in gameObjects)
             {
@@ -457,7 +471,20 @@ namespace ShoppingSpree
             //float cartRad = (cart.Collider.bb.Max - cart.Collider.bb.Min).Length() / 2;
             //BoundingSphereOverlay.Draw(cartCenter, cartRad, GraphicsDevice, cam);
 
+            // HUD
+            spriteBatch.Begin();
 
+            spriteBatch.DrawString(
+                letterFont,
+                "Time: " + Math.Floor(timeLeft),
+                new Vector2(20, 20),
+                Color.White
+            );
+            spriteBatch.End();
+            //reset graphics device
+            GraphicsDevice.BlendState = BlendState.Opaque;
+            GraphicsDevice.DepthStencilState = DepthStencilState.Default;
+            GraphicsDevice.SamplerStates[0] = SamplerState.LinearWrap;
 
             base.Draw(gameTime);
         }
