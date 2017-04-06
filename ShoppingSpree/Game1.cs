@@ -40,6 +40,8 @@ namespace ShoppingSpree
 
         // state vars
         float timeLeft = 30f;
+        int score = 0; //score in number of boxes in cart
+        bool gameOver = false;
 
         //Sound effects
         SoundEffect cartSound;
@@ -220,15 +222,20 @@ namespace ShoppingSpree
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-
-            Point changeInMouse = windowCenter - Mouse.GetState().Position;
-
-            if(timeLeft <= 0)
+            if (gameOver)
             {
-                timeLeft = 0f;
                 return;
             }
+
             timeLeft -= (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+            if (timeLeft <= 0)
+            {
+                timeLeft = 0f;
+                gameOver = true;
+                return;
+            }
+            Point changeInMouse = windowCenter - Mouse.GetState().Position;
 
             #region  update world
             foreach (GameObject g in gameObjects)
@@ -487,6 +494,44 @@ namespace ShoppingSpree
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
+            if (!gameOver)
+            {
+                DrawGame(gameTime);
+            }
+            else
+            {
+                DrawGameOver(gameTime);
+            }
+            base.Draw(gameTime);
+        }
+
+        private void DrawGameOver(GameTime gameTime)
+        {
+            GraphicsDevice.Clear(Color.DarkBlue);
+            spriteBatch.Begin();
+
+            spriteBatch.DrawString(
+                letterFont,
+                "Game Over!",
+                new Vector2(300, 20),
+                Color.White
+            );
+            spriteBatch.DrawString(
+                letterFont,
+                "Score: " + score,
+                new Vector2(300, 200),
+                Color.White
+            );
+            spriteBatch.End();
+            //reset graphics device
+            GraphicsDevice.BlendState = BlendState.Opaque;
+            GraphicsDevice.DepthStencilState = DepthStencilState.Default;
+            GraphicsDevice.SamplerStates[0] = SamplerState.LinearWrap;
+
+        }
+
+        private void DrawGame(GameTime gameTime)
+        {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             foreach (GameObject g in gameObjects)
@@ -526,13 +571,26 @@ namespace ShoppingSpree
                 new Vector2(20, 20),
                 Color.White
             );
+            Vector3 horizontalVel = cart.Vel - (Vector3.Dot(Vector3.Up, cart.Vel)) * Vector3.Up;
+            spriteBatch.DrawString(
+                letterFont,
+                "Speed: " + Math.Floor(horizontalVel.Length()) + " ft/s",
+                new Vector2(20, 50),
+                Color.White
+            );
+
+            spriteBatch.DrawString(
+                letterFont,
+                "Score: " + score + " items",
+                new Vector2(20, 80),
+                Color.White
+            );
             spriteBatch.End();
             //reset graphics device
             GraphicsDevice.BlendState = BlendState.Opaque;
             GraphicsDevice.DepthStencilState = DepthStencilState.Default;
             GraphicsDevice.SamplerStates[0] = SamplerState.LinearWrap;
 
-            base.Draw(gameTime);
         }
     }
 }
