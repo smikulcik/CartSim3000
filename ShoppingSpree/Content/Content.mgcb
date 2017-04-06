@@ -115,3 +115,21 @@
 /processorParam:TextureFormat=Compressed
 /build:LetterFont.spritefont
 
+#begin WheelingACart.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:WheelingACart.wav
+
+#begin squeak.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:squeak.mp3
+
+#begin cardboardBox.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:cardboardBox.wav
+

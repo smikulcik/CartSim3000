@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
@@ -40,6 +41,15 @@ namespace ShoppingSpree
         // state vars
         float timeLeft = 30f;
 
+        //Sound effects
+        SoundEffect cartSound;
+        SoundEffectInstance cartSoundInstance;
+
+        SoundEffect cartSqueak;
+        SoundEffectInstance cartSqueakInstance;
+
+        SoundEffect cardboardBox;
+
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -72,6 +82,14 @@ namespace ShoppingSpree
             spriteBatch = new SpriteBatch(GraphicsDevice);
             
             letterFont = Content.Load<SpriteFont>("LetterFont");
+
+            cartSound = Content.Load<SoundEffect>("WheelingACart");
+            cartSoundInstance = cartSound.CreateInstance();
+
+            cartSqueak = Content.Load<SoundEffect>("Squeak");
+            cartSqueakInstance = cartSqueak.CreateInstance();
+
+            cardboardBox = Content.Load<SoundEffect>("cardboardBox");
 
             models["floor"] = Content.Load<Model>("floor");
             models["walls"] = Content.Load<Model>("walls");
@@ -360,7 +378,7 @@ namespace ShoppingSpree
                     
                 }
             }
-            
+            bool hasPlayedBoxNoise = false;
             //collide boxes with boxes
            foreach (GameObject box1 in gameObjects)
             {
@@ -368,7 +386,14 @@ namespace ShoppingSpree
                 {
                     if(box1 != box2)
                     {
-                        box1.Collider.checkCollision(box2);
+                        if (box1.Collider.checkCollision(box2) && (box1.Vel - box2.Vel).Length() > 2 ) {
+                            //if collides with enough speed
+                            if (!hasPlayedBoxNoise)  // only one per frame
+                            {
+                                hasPlayedBoxNoise = true;
+                                cardboardBox.Play();
+                            }
+                        }
                     }
                 }
             }
@@ -431,6 +456,27 @@ namespace ShoppingSpree
             }
             #endregion
 
+
+            #region play sound effects
+            float forwardVel = Vector3.Dot(forward, cart.Vel);
+            if (Math.Abs(forwardVel) > .1)
+            {
+                if (cartSoundInstance.State != SoundState.Playing)
+                    cartSoundInstance.Play();
+            }
+            else
+                cartSoundInstance.Stop();
+
+
+            float sideVel = Vector3.Dot(right, cart.Vel);
+            if (Math.Abs(sideVel) > .1)
+            {
+                if (cartSqueakInstance.State != SoundState.Playing)
+                    cartSqueakInstance.Play();
+            }
+            else
+                cartSqueakInstance.Stop();
+            #endregion
 
             base.Update(gameTime);
         }
