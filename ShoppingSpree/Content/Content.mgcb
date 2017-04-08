@@ -171,3 +171,9 @@
 /processorParam:TextureFormat=Compressed
 /build:Larm.fbx
 
+#begin grunt.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:grunt.wav
+

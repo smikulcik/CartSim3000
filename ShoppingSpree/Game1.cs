@@ -55,6 +55,8 @@ namespace ShoppingSpree
         SoundEffect cartSqueak;
         SoundEffectInstance cartSqueakInstance;
 
+        SoundEffect gruntSound;
+
         SoundEffect cardboardBox;
 
         public Game1()
@@ -95,6 +97,8 @@ namespace ShoppingSpree
 
             cartSqueak = Content.Load<SoundEffect>("Squeak");
             cartSqueakInstance = cartSqueak.CreateInstance();
+
+            gruntSound = Content.Load<SoundEffect>("grunt");
 
             cardboardBox = Content.Load<SoundEffect>("cardboardBox");
 
@@ -349,6 +353,7 @@ namespace ShoppingSpree
                     // On left mouse release
                     Console.WriteLine("L Mouse Released");
                     larmAnimator.Play();
+                    gruntSound.Play();
 
                 }
                 leftClickDown = false;
@@ -364,6 +369,7 @@ namespace ShoppingSpree
                     // On right mouse release
                     Console.WriteLine("R Mouse Released");
                     rarmAnimator.Play();
+                    gruntSound.Play();
 
                 }
                 rightClickDown = false;
