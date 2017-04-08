@@ -69,5 +69,10 @@ namespace ShoppingSpree
                 }
             }
         }
+
+        public Vector3[] Verts
+        {
+            get { return verts; }
+        }
     }
 }

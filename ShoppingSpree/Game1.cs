@@ -37,6 +37,11 @@ namespace ShoppingSpree
         // game specific vars
         GameObject floor, cart;
         GameObject walls;
+        GameObject larm, rarm;
+
+        //animators
+        LArmAnimations larmAnimator;
+        RArmAnimations rarmAnimator;
 
         // state vars
         float timeLeft = 30f;
@@ -98,6 +103,8 @@ namespace ShoppingSpree
             models["cerealBox"] = Content.Load<Model>("cerealBox");
             models["cart"] = Content.Load<Model>("cart");
             models["shelf"] = Content.Load<Model>("shelf");
+            models["Larm"] = Content.Load<Model>("Larm");
+            models["Rarm"] = Content.Load<Model>("Rarm");
 
 
             // Add game specific objectss
@@ -121,8 +128,20 @@ namespace ShoppingSpree
                 new BoundingBox(new Vector3(-1.5f, .8f, 5.5f), new Vector3(1.5f, 3f, 6.5f))
             };
 
+            //arms
+            larm = new GameObject(
+                new Vector3(0, 0, 0), LArmAnimations.slerp(0),
+                .01f,
+                models["Larm"]);
+            rarm = new GameObject(
+                new Vector3(0, 0, 0), RArmAnimations.slerp(0),
+                .01f,
+                models["Rarm"]);
 
+            larmAnimator = new LArmAnimations(larm);
+            rarmAnimator = new RArmAnimations(rarm);
 
+            // build shelves
             for (int shelfno = 0; shelfno < 4; shelfno++)
             {
                 //add shelf
@@ -329,6 +348,7 @@ namespace ShoppingSpree
                 {
                     // On left mouse release
                     Console.WriteLine("L Mouse Released");
+                    larmAnimator.Play();
 
                 }
                 leftClickDown = false;
@@ -343,6 +363,7 @@ namespace ShoppingSpree
                 {
                     // On right mouse release
                     Console.WriteLine("R Mouse Released");
+                    rarmAnimator.Play();
 
                 }
                 rightClickDown = false;
@@ -404,7 +425,7 @@ namespace ShoppingSpree
                     }
                 }
             }
-            //collide boxes with floor, shelf and cart
+            //collide boxes with floor, shelf and cart, and arms
             foreach (GameObject box in gameObjects)
             {
                 floor.Collider.checkCollision(box);
@@ -417,6 +438,9 @@ namespace ShoppingSpree
                 box.Collider.EnableRotate = true;
                 cart.Collider.checkCollision(box);
                 box.Collider.EnableRotate = boxRotateState;
+
+                larm.Collider.checkCollision(box);
+                rarm.Collider.checkCollision(box);
             }
             #endregion
 
@@ -461,6 +485,16 @@ namespace ShoppingSpree
                 }
                 cam.Pos = cart.Pos + forward * -2 + new Vector3(0, 5, 0);
             }
+            larm.Pos = cart.Pos + new Vector3(2, 4, -2);
+            rarm.Pos = cart.Pos + new Vector3(-2, 4, -2);
+
+
+            larmAnimator.Update(gameTime);
+            rarmAnimator.Update(gameTime);
+
+            larm.Collider.BBGroup = new BoundingBox[] { BoundingBox.CreateFromPoints(larm.Collider.Verts) };
+            rarm.Collider.BBGroup = new BoundingBox[] { BoundingBox.CreateFromPoints(rarm.Collider.Verts) };
+
             #endregion
 
 
@@ -552,6 +586,8 @@ namespace ShoppingSpree
 
             walls.Draw(gameTime, cam, lamp);
             cart.Draw(gameTime, cam, lamp);
+            larm.Draw(gameTime, cam, lamp);
+            rarm.Draw(gameTime, cam, lamp);
 
             /*foreach (BoundingBox bb in cart.Collider.BBGroup)
             {
