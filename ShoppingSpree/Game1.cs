@@ -548,7 +548,32 @@ namespace ShoppingSpree
                 cartSqueakInstance.Stop();
             #endregion
 
+            UpdateScore();
+
             base.Update(gameTime);
+        }
+
+        private void UpdateScore()
+        {
+            int count = 0;
+            // check each box to see if it is in the cart
+            foreach(GameObject box in gameObjects)
+            {
+                //use cart bounding box for score calculation
+                if (box.Pos.X > cart.Pos.X - 1.5 &&
+                    box.Pos.X < cart.Pos.X + 1.5 &&
+                    box.Pos.Y > cart.Pos.Y + 0.8 &&
+                    box.Pos.Z > cart.Pos.Z - 0.5 &&
+                    box.Pos.Z < cart.Pos.Z + 5.5)
+                {
+                    // 1 pt for yellow box, 5 pts for blue box
+                    if (box.Model == models["cerealBox"])
+                        count++;
+                    else if (box.Model == models["cerealBoxBlue"])
+                        count += 5;
+                }
+            }
+            score = count;
         }
 
         /// <summary>
@@ -650,7 +675,7 @@ namespace ShoppingSpree
 
             spriteBatch.DrawString(
                 letterFont,
-                "Score: " + score + " items",
+                "Score: " + score,
                 new Vector2(20, 80),
                 Color.White
             );
