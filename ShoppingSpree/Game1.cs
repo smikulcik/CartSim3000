@@ -107,6 +107,7 @@ namespace ShoppingSpree
             models["walls"] = Content.Load<Model>("walls");
             models["ceiling"] = Content.Load<Model>("ceiling");
             models["cerealBox"] = Content.Load<Model>("cerealBox");
+            models["cerealBoxBlue"] = Content.Load<Model>("cerealBoxBlue");
             models["cart"] = Content.Load<Model>("cart");
             models["shelf"] = Content.Load<Model>("shelf");
             models["Larm"] = Content.Load<Model>("Larm");
@@ -155,6 +156,8 @@ namespace ShoppingSpree
             larmAnimator = new LArmAnimations(larm);
             rarmAnimator = new RArmAnimations(rarm);
 
+            Random r = new Random();
+
             // build shelves
             for (int shelfno = 0; shelfno < 4; shelfno++)
             {
@@ -191,11 +194,21 @@ namespace ShoppingSpree
                     //add boxes on shelf
                     for (int col = 0; col < 4; col++)
                     {
+                        Model boxModel;
+                        if(r.Next() % 10 == 0)
+                        {
+                            boxModel = models["cerealBoxBlue"];
+                        }
+                        else
+                        {
+                            boxModel = models["cerealBox"];
+                        }
+
                         GameObject box = new GameObject(
                             shelf.Pos +
                             new Vector3(s.Min.X, s.Max.Y, s.Min.Z) +
                             new Vector3(.1f, 0, col * 1.5f + .5f),
-                            Quaternion.Identity, 0.01f, models["cerealBox"]
+                            Quaternion.Identity, 0.01f, boxModel
                         );
                         box.Collider.EnableRotate = false;
                         gameObjects.Add(box);
@@ -205,7 +218,7 @@ namespace ShoppingSpree
                             shelf2.Pos +
                             new Vector3(s.Max.X, s.Max.Y, s.Min.Z) +
                             new Vector3(-.1f, .1f, col * 1.5f + .5f),
-                            Quaternion.Identity, 0.01f, models["cerealBox"]
+                            Quaternion.Identity, 0.01f, boxModel
                         );
                         box2.Collider.EnableRotate = false;
                         gameObjects.Add(box2);
