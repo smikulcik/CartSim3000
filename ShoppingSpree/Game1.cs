@@ -36,6 +36,7 @@ namespace ShoppingSpree
 
         // game specific vars
         GameObject floor, cart;
+        GameObject[] ceiling;
         GameObject walls;
         GameObject larm, rarm;
 
@@ -89,7 +90,7 @@ namespace ShoppingSpree
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            
+
             letterFont = Content.Load<SpriteFont>("LetterFont");
 
             cartSound = Content.Load<SoundEffect>("WheelingACart");
@@ -104,6 +105,7 @@ namespace ShoppingSpree
 
             models["floor"] = Content.Load<Model>("floor");
             models["walls"] = Content.Load<Model>("walls");
+            models["ceiling"] = Content.Load<Model>("ceiling");
             models["cerealBox"] = Content.Load<Model>("cerealBox");
             models["cart"] = Content.Load<Model>("cart");
             models["shelf"] = Content.Load<Model>("shelf");
@@ -114,9 +116,17 @@ namespace ShoppingSpree
             // Add game specific objectss
             floor = new GameObject(new Vector3(0, -1f, 0), Quaternion.Identity, 1f, models["floor"]);
             floor.Immovable = true;
-            
+
             walls = new GameObject(new Vector3(0, 0, 0), Quaternion.Identity, .5f, models["walls"]);
             Console.WriteLine(walls.Collider.bb);
+            ceiling = new GameObject[6 * 6];
+            for(int i = 0; i < 6; i++)
+            {
+                for(int j = 0; j < 6; j++)
+                {
+                    ceiling[6 * i + j] = new GameObject(new Vector3(-39+i*14, 10, -28+j*15), Quaternion.Identity, .01f, models["ceiling"]);
+                }
+            }
 
 
             cart = new GameObject(new Vector3(0, .1f, 1), Quaternion.Identity, .01f, models["cart"]);
@@ -591,6 +601,10 @@ namespace ShoppingSpree
             floor.Draw(gameTime, cam, lamp);
 
             walls.Draw(gameTime, cam, lamp);
+            foreach(GameObject ceilSection in ceiling)
+            {
+                ceilSection.Draw(gameTime, cam, null);
+            }
             cart.Draw(gameTime, cam, lamp);
             larm.Draw(gameTime, cam, lamp);
             rarm.Draw(gameTime, cam, lamp);

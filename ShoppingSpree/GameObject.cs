@@ -72,7 +72,7 @@ namespace ShoppingSpree
             model.Draw(World, cam.getViewMatrix(), cam.getProjMatrix());
             //Matrix.CreateScale(scale)*Matrix.CreateFromQuaternion(quaternion)*Matrix.CreateTranslation(position)
             // null for empty game object
-            if (model != null)
+            if (model != null && lamp != null)
             {
                 foreach(ModelMesh mesh in model.Meshes)
                 {
