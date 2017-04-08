@@ -69,7 +69,6 @@ namespace ShoppingSpree
         public static Quaternion slerp(float percent)
         {
             float amt;
-            Console.WriteLine(percent);
 
             int i = (int)(percent * (frames.Length - 1));
             amt = percent * (frames.Length - 1) - i;  //amount to slerp between ith frame and ith+1 frame

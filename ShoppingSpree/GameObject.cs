@@ -90,9 +90,6 @@ namespace ShoppingSpree
                     }
                     //mesh.Draw();
                 }
-            }else
-            {
-                Debug.WriteLine(model);
             }
         }
 
