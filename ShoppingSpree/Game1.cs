@@ -119,7 +119,7 @@ namespace ShoppingSpree
             floor.Immovable = true;
 
             walls = new GameObject(new Vector3(0, 0, 0), Quaternion.Identity, .5f, models["walls"]);
-            Console.WriteLine(walls.Collider.bb);
+
             ceiling = new GameObject[6 * 6];
             for(int i = 0; i < 6; i++)
             {
@@ -250,6 +250,7 @@ namespace ShoppingSpree
             // TODO: Unload any non ContentManager content here
         }
 
+        Boolean wasActiveLastUpdate = false;
         Boolean spaceDown = false;
         Boolean leftClickDown = false;
         Boolean rightClickDown = false;
@@ -262,8 +263,10 @@ namespace ShoppingSpree
         protected override void Update(GameTime gameTime)
         {
             // don't update if screen not in focus
-            if (!this.IsActive)
+            if (!this.IsActive) {
+                wasActiveLastUpdate = false;
                 return;
+            }
 
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
@@ -281,8 +284,16 @@ namespace ShoppingSpree
                 gameOver = true;
                 return;
             }
+
             Point changeInMouse = windowCenter - Mouse.GetState().Position;
 
+            // Reset mouse if we just activated the game window.
+            // Otherwise mouse jumps to center of screen and moves camera.
+            if (!wasActiveLastUpdate)
+            {
+                Console.WriteLine("reset mouse");
+                changeInMouse = new Point(0, 0);
+            }
             #region  update world
             foreach (GameObject g in gameObjects)
             {
@@ -550,6 +561,7 @@ namespace ShoppingSpree
 
             UpdateScore();
 
+            wasActiveLastUpdate = true;
             base.Update(gameTime);
         }
 
