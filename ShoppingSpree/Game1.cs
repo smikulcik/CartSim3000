@@ -243,7 +243,7 @@ namespace ShoppingSpree
             }*/
 
             // generic games
-            cam = new Camera(new Vector3(0, 0, 0), MathHelper.Pi);
+            cam = new Camera(new Vector3(0, 0, 0), MathHelper.Pi, GraphicsDevice);
             lamp = new Lamp(new Vector3(30, 30, 30));
             windowCenter = new Point(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight / 2);
 
@@ -605,13 +605,27 @@ namespace ShoppingSpree
         {
             if (!gameOver)
             {
-                DrawGame(gameTime);
+                cam.Activate(GraphicsDevice);
+                DrawGame(gameTime, cam);
+                Texture2D gameScreen = cam.Deactivate(GraphicsDevice);
+                DrawTexture(gameScreen);
             }
             else
             {
                 DrawGameOver(gameTime);
             }
             base.Draw(gameTime);
+        }
+
+        protected void DrawTexture(Texture2D tex)
+        {
+            spriteBatch.Begin();
+            spriteBatch.Draw(tex, new Vector2(0, 0), Color.White);
+            spriteBatch.End();
+            //reset graphics device
+            GraphicsDevice.BlendState = BlendState.Opaque;
+            GraphicsDevice.DepthStencilState = DepthStencilState.Default;
+            GraphicsDevice.SamplerStates[0] = SamplerState.LinearWrap;
         }
 
         private void DrawGameOver(GameTime gameTime)
@@ -639,44 +653,44 @@ namespace ShoppingSpree
 
         }
 
-        private void DrawGame(GameTime gameTime)
+        private void DrawGame(GameTime gameTime, Camera camera)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             foreach (GameObject g in gameObjects)
             {
-                g.Draw(gameTime, cam, lamp);
+                g.Draw(gameTime, camera, lamp);
             }
             foreach (GameObject s in shelves)
             {
-                s.Draw(gameTime, cam, lamp);
+                s.Draw(gameTime, camera, lamp);
 
                 //draw bounding box
                 /*foreach (BoundingBox bb in s.Collider.BBGroup)
                 {
-                    BoundingBoxOverlay.Draw(bb, GraphicsDevice, cam);
+                    BoundingBoxOverlay.Draw(bb, GraphicsDevice, camera);
                 }*/
             }
-            floor.Draw(gameTime, cam, lamp);
+            floor.Draw(gameTime, camera, lamp);
 
-            walls.Draw(gameTime, cam, lamp);
+            walls.Draw(gameTime, camera, lamp);
             foreach(GameObject ceilSection in ceiling)
             {
-                ceilSection.Draw(gameTime, cam, null);
+                ceilSection.Draw(gameTime, camera, null);
             }
-            cart.Draw(gameTime, cam, lamp);
-            larm.Draw(gameTime, cam, lamp);
-            rarm.Draw(gameTime, cam, lamp);
-            snowman.Draw(gameTime, cam, lamp);
+            cart.Draw(gameTime, camera, lamp);
+            larm.Draw(gameTime, camera, lamp);
+            rarm.Draw(gameTime, camera, lamp);
+            //snowman.Draw(gameTime, camera, lamp);
 
             /*foreach (BoundingBox bb in cart.Collider.BBGroup)
             {
-                BoundingBoxOverlay.Draw(bb, GraphicsDevice, cam);
+                BoundingBoxOverlay.Draw(bb, GraphicsDevice, camera);
             }*/
             //draw bounding sphere
             //Vector3 cartCenter = (cart.Collider.bb.Max + cart.Collider.bb.Min) / 2;
             //float cartRad = (cart.Collider.bb.Max - cart.Collider.bb.Min).Length() / 2;
-            //BoundingSphereOverlay.Draw(cartCenter, cartRad, GraphicsDevice, cam);
+            //BoundingSphereOverlay.Draw(cartCenter, cartRad, GraphicsDevice, camera);
 
             // HUD
             spriteBatch.Begin();
