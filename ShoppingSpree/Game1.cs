@@ -39,6 +39,7 @@ namespace ShoppingSpree
         GameObject[] ceiling;
         GameObject walls;
         GameObject larm, rarm;
+        GameObject snowman;
 
         //animators
         LArmAnimations larmAnimator;
@@ -112,6 +113,7 @@ namespace ShoppingSpree
             models["shelf"] = Content.Load<Model>("shelf");
             models["Larm"] = Content.Load<Model>("Larm");
             models["Rarm"] = Content.Load<Model>("Rarm");
+            models["snowman"] = Content.Load<Model>("snowman");
 
 
             // Add game specific objectss
@@ -155,6 +157,12 @@ namespace ShoppingSpree
 
             larmAnimator = new LArmAnimations(larm);
             rarmAnimator = new RArmAnimations(rarm);
+
+
+            snowman = new GameObject(
+                new Vector3(0, 0, 0), Quaternion.Identity,
+                .008f,
+                models["snowman"]);
 
             Random r = new Random();
 
@@ -527,6 +535,7 @@ namespace ShoppingSpree
             }
             larm.Pos = cart.Pos + new Vector3(2, 4, -2);
             rarm.Pos = cart.Pos + new Vector3(-2, 4, -2);
+            snowman.Pos = cart.Pos + new Vector3(0,1,-2);
 
 
             larmAnimator.Update(gameTime);
@@ -658,6 +667,7 @@ namespace ShoppingSpree
             cart.Draw(gameTime, cam, lamp);
             larm.Draw(gameTime, cam, lamp);
             rarm.Draw(gameTime, cam, lamp);
+            snowman.Draw(gameTime, cam, lamp);
 
             /*foreach (BoundingBox bb in cart.Collider.BBGroup)
             {
