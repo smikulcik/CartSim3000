@@ -215,3 +215,9 @@
 /processorParam:TextureFormat=Compressed
 /build:cerealBoxBlue.fbx
 
+#begin Jazz club1 130.wav
+/importer:WavImporter
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:Jazz club1 130.wav
+

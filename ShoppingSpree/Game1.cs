@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Media;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -70,6 +71,8 @@ namespace ShoppingSpree
 
         SoundEffect cardboardBox;
 
+        Song jazzSong;
+
         Scoreboard scoreboard;
         string scoreboardFilename = "scoreboard.xml";
 
@@ -125,6 +128,9 @@ namespace ShoppingSpree
 
             gruntSound = Content.Load<SoundEffect>("grunt");
 
+            jazzSong = Content.Load<Song>("Jazz club1 130");
+            MediaPlayer.IsRepeating = true;
+            
             cardboardBox = Content.Load<SoundEffect>("cardboardBox");
 
             models["floor"] = Content.Load<Model>("floor");
@@ -324,6 +330,7 @@ namespace ShoppingSpree
                     if (enterDown)
                     {
                         gameState = GameState.GAME;
+                        MediaPlayer.Play(jazzSong);
                     }
                     enterDown = false;
                 }
@@ -331,6 +338,7 @@ namespace ShoppingSpree
             }
             if (gameState == GameState.GAMEOVER)
             {
+                MediaPlayer.Stop();
                 return;
             }
 
