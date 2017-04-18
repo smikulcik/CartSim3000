@@ -48,7 +48,14 @@ namespace ShoppingSpree
         // state vars
         float timeLeft = 30f;
         int score = 0; //score in number of boxes in cart
-        bool gameOver = false;
+        enum GameState
+        {
+            TITLECREDITS,
+            HOWTOPLAY,
+            GAME,
+            GAMEOVER
+        };
+        GameState gameState = GameState.TITLECREDITS;
 
         //Sound effects
         SoundEffect cartSound;
@@ -269,6 +276,7 @@ namespace ShoppingSpree
         Boolean spaceDown = false;
         Boolean leftClickDown = false;
         Boolean rightClickDown = false;
+        Boolean enterDown = false;
         Boolean eKeyDown = false;
         /// <summary>
         /// Allows the game to run logic such as updating the world,
@@ -286,7 +294,40 @@ namespace ShoppingSpree
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            if (gameOver)
+            if (gameState == GameState.TITLECREDITS)
+            {
+                if (Keyboard.GetState().IsKeyDown(Keys.Enter))
+                {
+                    enterDown = true;
+                }
+                else
+                {
+                    if (enterDown)
+                    {
+                        gameState = GameState.HOWTOPLAY;
+                    }
+                    enterDown = false;
+                }
+                return;
+            }
+
+            if (gameState == GameState.HOWTOPLAY)
+            {
+                if (Keyboard.GetState().IsKeyDown(Keys.Enter))
+                {
+                    enterDown = true;
+                }
+                else
+                {
+                    if (enterDown)
+                    {
+                        gameState = GameState.GAME;
+                    }
+                    enterDown = false;
+                }
+                return;
+            }
+            if (gameState == GameState.GAMEOVER)
             {
                 return;
             }
@@ -612,7 +653,7 @@ namespace ShoppingSpree
                 scoreboard.addScore(new ScoreboardEntry(p.name, score));
                 scoreboard.SaveToXML(scoreboardFilename);
             }
-            gameOver = true;
+            gameState = GameState.GAMEOVER;
         }
 
         /// <summary>
@@ -621,15 +662,97 @@ namespace ShoppingSpree
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            if (!gameOver)
+            switch (gameState)
             {
-                DrawGame(gameTime);
-            }
-            else
-            {
-                DrawGameOver(gameTime);
+                case GameState.TITLECREDITS:
+                    DrawTitleCredits(gameTime);
+                    break;
+                case GameState.HOWTOPLAY:
+                    DrawHowToPlay(gameTime);
+                    break;
+                case GameState.GAME:
+                    DrawGame(gameTime);
+                    break;
+                case GameState.GAMEOVER:
+                    DrawGameOver(gameTime);
+                    break;
             }
             base.Draw(gameTime);
+        }
+
+        private void DrawTitleCredits(GameTime gameTime)
+        {
+
+            GraphicsDevice.Clear(Color.DarkBlue);
+            spriteBatch.Begin();
+
+            spriteBatch.DrawString(
+                letterFont,
+                "Shopping Cart Sim",
+                new Vector2(300, 20),
+                Color.White
+            );
+            spriteBatch.DrawString(
+                letterFont,
+                "Hit Enter...",
+                new Vector2(400, 400),
+                Color.White
+            );
+
+            spriteBatch.DrawString(
+                letterFont,
+                "Credits:\n\n" +
+                "Concept, Game Engine, and\n" +
+                "   Programming: Simon Mikulcik\n" +
+                "In partial fulfillment of the requirements\n" +
+                "   for CSC 316 at Eastern Kentucky University\n\n" +
+                "Made with Monogame",
+                new Vector2(20, 100),
+                Color.White);
+
+            spriteBatch.End();
+            //reset graphics device
+            GraphicsDevice.BlendState = BlendState.Opaque;
+            GraphicsDevice.DepthStencilState = DepthStencilState.Default;
+            GraphicsDevice.SamplerStates[0] = SamplerState.LinearWrap;
+
+        }
+
+        private void DrawHowToPlay(GameTime gameTime)
+        {
+            GraphicsDevice.Clear(Color.DarkBlue);
+            spriteBatch.Begin();
+
+            spriteBatch.DrawString(
+                letterFont,
+                "How To Play",
+                new Vector2(300, 20),
+                Color.White
+            );
+            spriteBatch.DrawString(
+                letterFont,
+                "Hit Enter to begin...",
+                new Vector2(400, 400),
+                Color.White
+            );
+
+            spriteBatch.DrawString(
+                letterFont,
+                "Objective: Collect boxes in cart to earn a high score\n\n" +
+                "WASD: Movements\n" +
+                "Mouse: Look Around\n" +
+                "L/R Mouse Clicks: Use arms\n" +
+                "Space: Jump on cart\n" +
+                "Esc: Quit",
+                new Vector2(20, 100),
+                Color.White);
+
+            spriteBatch.End();
+            //reset graphics device
+            GraphicsDevice.BlendState = BlendState.Opaque;
+            GraphicsDevice.DepthStencilState = DepthStencilState.Default;
+            GraphicsDevice.SamplerStates[0] = SamplerState.LinearWrap;
+
         }
 
         private void DrawGameOver(GameTime gameTime)
