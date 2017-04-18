@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace ShoppingSpree
 {
@@ -60,10 +61,24 @@ namespace ShoppingSpree
 
         SoundEffect cardboardBox;
 
+        Scoreboard scoreboard;
+        string scoreboardFilename = "scoreboard.xml";
+
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
+
+            scoreboard = new Scoreboard();
+            try
+            {
+                scoreboard.LoadFromXML(scoreboardFilename);
+            }
+            catch(FileNotFoundException e)
+            {
+                // no save file was found, a new one will be generated
+                //pass
+            }
         }
 
         /// <summary>
@@ -281,7 +296,7 @@ namespace ShoppingSpree
             if (timeLeft <= 0)
             {
                 timeLeft = 0f;
-                gameOver = true;
+                endGame();
                 return;
             }
 
@@ -588,6 +603,18 @@ namespace ShoppingSpree
             score = count;
         }
 
+        private void endGame()
+        {
+            if(scoreboard.Scores.Count < scoreboard.Size || score > scoreboard.LowestScore)
+            {
+                NamePrompt p = new NamePrompt();
+                p.ShowDialog();
+                scoreboard.addScore(new ScoreboardEntry(p.name, score));
+                scoreboard.SaveToXML(scoreboardFilename);
+            }
+            gameOver = true;
+        }
+
         /// <summary>
         /// This is called when the game should draw itself.
         /// </summary>
@@ -619,9 +646,30 @@ namespace ShoppingSpree
             spriteBatch.DrawString(
                 letterFont,
                 "Score: " + score,
-                new Vector2(300, 200),
+                new Vector2(500, 20),
                 Color.White
             );
+            //draw scoreboard
+            for(int i = 0; i < scoreboard.Size; i++)
+            {
+                spriteBatch.DrawString(
+                    letterFont,
+                    (i + 1) + ".",
+                    new Vector2(100, 80 + i * 35),
+                    Color.White
+                );
+
+                if (i < scoreboard.Scores.Count)
+                {
+                    spriteBatch.DrawString(
+                        letterFont,
+                        scoreboard.Scores[i].Name + " " + scoreboard.Scores[i].Value,
+                        new Vector2(145, 80 + i*35),
+                        Color.White
+                    );
+                }
+            }
+
             spriteBatch.End();
             //reset graphics device
             GraphicsDevice.BlendState = BlendState.Opaque;
