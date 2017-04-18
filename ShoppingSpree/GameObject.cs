@@ -24,7 +24,7 @@ namespace ShoppingSpree
         {
             get
             {
-                return .9f;
+                return .6f;
             }
         }
 
