@@ -27,6 +27,8 @@ namespace ShoppingSpree
         Camera cam;
         Lamp lamp;
 
+        float jumpOnCartTransistion = 0;
+
         Point windowCenter;
         float sensitivity = 0.01f;
 
@@ -546,18 +548,20 @@ namespace ShoppingSpree
             Vector3 forward = Vector3.Transform(Vector3.UnitZ, Matrix.CreateFromQuaternion(cart.Rotation));
             Vector3 right = Vector3.Cross(forward, Vector3.Up);
 
+            float jumpDuration = .1f;//seconds
             if (Keyboard.GetState().IsKeyDown(Keys.Space))
             {
                 if (!spaceDown)
                 {
                     cart.Vel = forward * 35;
-                    cart.Pos += Vector3.Up*.02f;
+                    cart.Pos += Vector3.Up*.2f;
                     spaceDown = true;
-                }
-                cam.Pos = cart.Pos + forward * -1 + new Vector3(0, 6, 0);
+                 }
+                jumpOnCartTransistion += (float)gameTime.ElapsedGameTime.TotalSeconds / jumpDuration;
             }
             else
             {
+                jumpOnCartTransistion -= (float)gameTime.ElapsedGameTime.TotalSeconds / jumpDuration;
                 spaceDown = false;
                 Vector3 movement = Vector3.Zero;
 
@@ -579,8 +583,16 @@ namespace ShoppingSpree
                     cart.Vel += movement;
                     cart.Vel = Vector3.Normalize(cart.Vel) * MathHelper.Min(cart.Vel.Length(), 10);
                 }
-                cam.Pos = cart.Pos + forward * -2 + new Vector3(0, 5, 0);
             }
+
+
+            jumpOnCartTransistion = MathHelper.Clamp(jumpOnCartTransistion, 0, 1f);
+            cam.Pos = Vector3.Lerp(
+                cart.Pos + forward * -2 + new Vector3(0, 5, 0), //normal
+                cart.Pos + forward * -1 + new Vector3(0, 6, 0), //jumpedOnCart
+                jumpOnCartTransistion
+            );
+
             larm.Pos = cart.Pos + new Vector3(2, 4, -2);
             rarm.Pos = cart.Pos + new Vector3(-2, 4, -2);
 
