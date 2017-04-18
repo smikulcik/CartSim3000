@@ -57,6 +57,9 @@ namespace ShoppingSpree
 
         static Quaternion[] frames = new Quaternion[] {
             rest,
+            Quaternion.CreateFromAxisAngle(Vector3.Right, -MathHelper.PiOver2) *
+            Quaternion.CreateFromAxisAngle(Vector3.Up, .5f) *
+            Quaternion.CreateFromAxisAngle(Vector3.Up, MathHelper.Pi),
 
             Quaternion.CreateFromAxisAngle(Vector3.Up, MathHelper.PiOver2) *
             Quaternion.CreateFromAxisAngle(Vector3.Up, MathHelper.Pi),
