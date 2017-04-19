@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 /// Retrieved From: http://timjones.io/blog/archive/2010/12/10/drawing-an-xna-model-bounding-box
 /// 
 /// </summary>
-namespace ShoppingSpree
+namespace CartSim3000
 {
     public class BoundingBoxBuffers
     {

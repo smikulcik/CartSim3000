@@ -1,4 +1,4 @@
-﻿namespace ShoppingSpree
+﻿namespace CartSim3000
 {
     partial class NamePrompt
     {

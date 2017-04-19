@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace ShoppingSpree
+namespace CartSim3000
 {
     public partial class NamePrompt : Form
     {

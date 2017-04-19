@@ -9,8 +9,8 @@
     <ProjectGuid>{24DE8BDC-74C0-44C9-84EE-7A642662AEE1}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ShoppingSpree</RootNamespace>
-    <AssemblyName>ShoppingSpree</AssemblyName>
+    <RootNamespace>CartSim3000</RootNamespace>
+    <AssemblyName>CartSim3000</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <MonoGamePlatform>Windows</MonoGamePlatform>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>

@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 
-namespace ShoppingSpree
+namespace CartSim3000
 {
     public class ScoreboardEntry : IComparable<ScoreboardEntry>
     {

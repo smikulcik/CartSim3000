@@ -5,7 +5,7 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace ShoppingSpree
+namespace CartSim3000
 {
     public class BoundingBoxGroupCollider : Collider
     {

@@ -7,7 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace ShoppingSpree
+namespace CartSim3000
 {
     /// <summary>
     /// This is the main type for your game.
@@ -708,7 +708,7 @@ namespace ShoppingSpree
 
             spriteBatch.DrawString(
                 letterFont,
-                "Shopping Cart Sim",
+                "Cart Sim 3000",
                 new Vector2(300, 20),
                 Color.White
             );

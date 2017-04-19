@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ShoppingSpree
+namespace CartSim3000
 {
 #if WINDOWS || LINUX
     /// <summary>
