@@ -49,9 +49,11 @@
     <Compile Include="Lamp.cs" />
     <Compile Include="LArmAnimations.cs" />
     <Compile Include="MeshCollider.cs" />
+    <Compile Include="Mirror.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RArmAnimations.cs" />
+    <Compile Include="Billboard.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">

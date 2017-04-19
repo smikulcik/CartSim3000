@@ -46,7 +46,6 @@ namespace ShoppingSpree
         {
             this.rotX = rotX;
             fov = MathHelper.PiOver2;
-            init(device);
         }
 
         private void init(GraphicsDevice device)
@@ -87,6 +86,7 @@ namespace ShoppingSpree
         /// <param name="device"></param>
         public void Activate(GraphicsDevice device)
         {
+            init(device);
             device.SetRenderTarget(renderTarget);
         }
 

@@ -41,6 +41,8 @@ namespace ShoppingSpree
         GameObject larm, rarm;
         GameObject snowman;
 
+        Mirror mirror;
+
         //animators
         LArmAnimations larmAnimator;
         RArmAnimations rarmAnimator;
@@ -244,6 +246,7 @@ namespace ShoppingSpree
 
             // generic games
             cam = new Camera(new Vector3(0, 0, 0), MathHelper.Pi, GraphicsDevice);
+            mirror = new Mirror(new Vector3(0,0,.2f), Quaternion.Identity, 0.01f, GraphicsDevice);
             lamp = new Lamp(new Vector3(30, 30, 30));
             windowCenter = new Point(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight / 2);
 
@@ -454,6 +457,7 @@ namespace ShoppingSpree
                     
                 }
             }
+            
             bool hasPlayedBoxNoise = false;
             //collide boxes with boxes
            foreach (GameObject box1 in gameObjects)
@@ -473,6 +477,7 @@ namespace ShoppingSpree
                     }
                 }
             }
+
             //collide boxes with floor, shelf and cart, and arms
             foreach (GameObject box in gameObjects)
             {
@@ -533,6 +538,7 @@ namespace ShoppingSpree
                 }
                 cam.Pos = cart.Pos + forward * -2 + new Vector3(0, 5, 0);
             }
+
             larm.Pos = cart.Pos + new Vector3(2, 4, -2);
             rarm.Pos = cart.Pos + new Vector3(-2, 4, -2);
             snowman.Pos = cart.Pos + new Vector3(0,1,-2);
@@ -605,10 +611,23 @@ namespace ShoppingSpree
         {
             if (!gameOver)
             {
+                mirror.Update(gameTime, cam);
+                mirror.mirrorCam.Activate(GraphicsDevice);
+                DrawGame(gameTime, cam);
+                Texture2D gameScreen = mirror.mirrorCam.Deactivate(GraphicsDevice);
+
+                Billboard b = new Billboard(gameScreen, GraphicsDevice);
+                b.Pos = new Vector3(-.2f, 0, 0);
+
                 cam.Activate(GraphicsDevice);
                 DrawGame(gameTime, cam);
-                Texture2D gameScreen = cam.Deactivate(GraphicsDevice);
-                DrawTexture(gameScreen);
+                b.Draw(gameTime, GraphicsDevice, cam, lamp);
+                Texture2D renderedTex = cam.Deactivate(GraphicsDevice);
+                
+                DrawTexture(renderedTex, new Vector2(0,0));
+
+                gameScreen.Dispose();
+                renderedTex.Dispose();
             }
             else
             {
@@ -617,10 +636,10 @@ namespace ShoppingSpree
             base.Draw(gameTime);
         }
 
-        protected void DrawTexture(Texture2D tex)
+        protected void DrawTexture(Texture2D tex, Vector2 loc)
         {
             spriteBatch.Begin();
-            spriteBatch.Draw(tex, new Vector2(0, 0), Color.White);
+            spriteBatch.Draw(tex, loc, Color.White);
             spriteBatch.End();
             //reset graphics device
             GraphicsDevice.BlendState = BlendState.Opaque;
