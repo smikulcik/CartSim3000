@@ -60,6 +60,10 @@ namespace CartSim3000
         };
         GameState gameState = GameState.TITLECREDITS;
 
+        //screens
+        Texture2D startScreen;
+        Texture2D howToPlayScreen;
+
         //Sound effects
         SoundEffect cartSound;
         SoundEffectInstance cartSoundInstance;
@@ -71,6 +75,7 @@ namespace CartSim3000
 
         SoundEffect cardboardBox;
 
+        Song introJazzSong;
         Song jazzSong;
 
         Scoreboard scoreboard;
@@ -123,6 +128,9 @@ namespace CartSim3000
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
+            startScreen = Content.Load<Texture2D>("startPage");
+            howToPlayScreen = Content.Load<Texture2D>("howtoplay");
+
             letterFont = Content.Load<SpriteFont>("LetterFont");
 
             cartSound = Content.Load<SoundEffect>("WheelingACart");
@@ -133,6 +141,7 @@ namespace CartSim3000
 
             gruntSound = Content.Load<SoundEffect>("grunt");
 
+            introJazzSong = Content.Load<Song>("Walking Sax2");
             jazzSong = Content.Load<Song>("Jazz club1 130");
             MediaPlayer.IsRepeating = true;
             
@@ -309,6 +318,10 @@ namespace CartSim3000
 
             if (gameState == GameState.TITLECREDITS)
             {
+                if(MediaPlayer.State != MediaState.Playing)
+                {
+                    MediaPlayer.Play(introJazzSong);
+                }
                 if (Keyboard.GetState().IsKeyDown(Keys.Enter))
                 {
                     enterDown = true;
@@ -711,29 +724,7 @@ namespace CartSim3000
             GraphicsDevice.Clear(Color.DarkBlue);
             spriteBatch.Begin();
 
-            spriteBatch.DrawString(
-                letterFont,
-                "Cart Sim 3000",
-                new Vector2(300, 20),
-                Color.White
-            );
-            spriteBatch.DrawString(
-                letterFont,
-                "Hit Enter...",
-                new Vector2(400, 400),
-                Color.White
-            );
-
-            spriteBatch.DrawString(
-                letterFont,
-                "Credits:\n\n" +
-                "Concept, Game Engine, and\n" +
-                "   Programming: Simon Mikulcik\n" +
-                "In partial fulfillment of the requirements\n" +
-                "   for CSC 316 at Eastern Kentucky University\n\n" +
-                "Made with Monogame",
-                new Vector2(20, 100),
-                Color.White);
+            spriteBatch.Draw(startScreen, new Vector2(0, 0), Color.White);
 
             spriteBatch.End();
             //reset graphics device
@@ -748,29 +739,7 @@ namespace CartSim3000
             GraphicsDevice.Clear(Color.DarkBlue);
             spriteBatch.Begin();
 
-            spriteBatch.DrawString(
-                letterFont,
-                "How To Play",
-                new Vector2(300, 20),
-                Color.White
-            );
-            spriteBatch.DrawString(
-                letterFont,
-                "Hit Enter to begin...",
-                new Vector2(400, 400),
-                Color.White
-            );
-
-            spriteBatch.DrawString(
-                letterFont,
-                "Objective: Collect boxes in cart to earn a high score\n\n" +
-                "WASD: Movements\n" +
-                "Mouse: Look Around\n" +
-                "L/R Mouse Clicks: Use arms\n" +
-                "Space: Jump on cart\n" +
-                "Esc: Quit",
-                new Vector2(20, 100),
-                Color.White);
+            spriteBatch.Draw(howToPlayScreen, new Vector2(0, 0), Color.White);
 
             spriteBatch.End();
             //reset graphics device
@@ -782,20 +751,20 @@ namespace CartSim3000
 
         private void DrawGameOver(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.DarkBlue);
+            GraphicsDevice.Clear(Color.Black);
             spriteBatch.Begin();
 
             spriteBatch.DrawString(
                 letterFont,
-                "Game Over!",
+                "Game Over ",
                 new Vector2(300, 20),
-                Color.White
+                new Color(34, 184, 221)
             );
             spriteBatch.DrawString(
                 letterFont,
-                "Score: " + score,
-                new Vector2(500, 20),
-                Color.White
+                "Score " + score,
+                new Vector2(800, 20),
+                new Color(34, 184, 221)
             );
             //draw scoreboard
             for(int i = 0; i < scoreboard.Size; i++)
@@ -803,8 +772,8 @@ namespace CartSim3000
                 spriteBatch.DrawString(
                     letterFont,
                     (i + 1) + ".",
-                    new Vector2(100, 80 + i * 35),
-                    Color.White
+                    new Vector2(100, 150 + i * 70),
+                    new Color(238, 239, 124)
                 );
 
                 if (i < scoreboard.Scores.Count)
@@ -812,8 +781,8 @@ namespace CartSim3000
                     spriteBatch.DrawString(
                         letterFont,
                         scoreboard.Scores[i].Name + " " + scoreboard.Scores[i].Value,
-                        new Vector2(145, 80 + i*35),
-                        Color.White
+                        new Vector2(200, 150 + i*70),
+                    new Color(238, 239, 124)
                     );
                 }
             }
@@ -869,23 +838,23 @@ namespace CartSim3000
 
             spriteBatch.DrawString(
                 letterFont,
-                "Time: " + Math.Floor(timeLeft),
+                "Time " + Math.Floor(timeLeft),
                 new Vector2(20, 20),
-                Color.White
+                new Color(238, 239, 124)
             );
             Vector3 horizontalVel = cart.Vel - (Vector3.Dot(Vector3.Up, cart.Vel)) * Vector3.Up;
             spriteBatch.DrawString(
                 letterFont,
-                "Speed: " + Math.Floor(horizontalVel.Length()) + " ft/s",
-                new Vector2(20, 50),
-                Color.White
+                "Speed " + Math.Floor(horizontalVel.Length()) + " ft s",
+                new Vector2(20, 100),
+                new Color(238, 239, 124)
             );
 
             spriteBatch.DrawString(
                 letterFont,
-                "Score: " + score,
-                new Vector2(20, 80),
-                Color.White
+                "Score " + score,
+                new Vector2(20, 180),
+                new Color(238, 239, 124)
             );
             spriteBatch.End();
             //reset graphics device
