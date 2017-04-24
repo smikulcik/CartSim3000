@@ -251,3 +251,15 @@
 /processorParam:Quality=Best
 /build:Walking Sax2.mp3
 
+#begin metal_drag.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:metal_drag.wav
+
+#begin jumpGrunt.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:jumpGrunt.wav
+

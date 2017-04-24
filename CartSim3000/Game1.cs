@@ -72,6 +72,10 @@ namespace CartSim3000
         SoundEffectInstance cartSqueakInstance;
 
         SoundEffect gruntSound;
+        SoundEffect jumpGruntSound;
+
+        SoundEffect metalDragSound;
+        SoundEffectInstance metalDragInstance;
 
         SoundEffect cardboardBox;
 
@@ -140,6 +144,10 @@ namespace CartSim3000
             cartSqueakInstance = cartSqueak.CreateInstance();
 
             gruntSound = Content.Load<SoundEffect>("grunt");
+            jumpGruntSound = Content.Load<SoundEffect>("jumpGrunt");
+
+            metalDragSound = Content.Load<SoundEffect>("metal_drag");
+            metalDragInstance = metalDragSound.CreateInstance();
 
             introJazzSong = Content.Load<Song>("Walking Sax2");
             jazzSong = Content.Load<Song>("Jazz club1 130");
@@ -527,9 +535,10 @@ namespace CartSim3000
                 floor.Collider.checkCollision(shelf);
                 if (cart.Collider.checkCollision(shelf))
                 {
-                    
+                    metalDragInstance.Play();
                 }
             }
+
             bool hasPlayedBoxNoise = false;
             //collide boxes with boxes
            foreach (GameObject box1 in gameObjects)
@@ -579,6 +588,7 @@ namespace CartSim3000
             {
                 if (!spaceDown)
                 {
+                    jumpGruntSound.Play();
                     cart.Vel = forward * 35;
                     cart.Pos += Vector3.Up*.2f;
                     spaceDown = true;
