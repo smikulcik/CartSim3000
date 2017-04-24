@@ -263,3 +263,9 @@
 /processorParam:Quality=Best
 /build:jumpGrunt.wav
 
+#begin bluesJazzSong.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:bluesJazzSong.mp3
+

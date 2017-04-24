@@ -81,6 +81,7 @@ namespace CartSim3000
 
         Song introJazzSong;
         Song jazzSong;
+        Song bluesJazzSong;
 
         Scoreboard scoreboard;
         string scoreboardFilename = "scoreboard.xml";
@@ -151,6 +152,7 @@ namespace CartSim3000
 
             introJazzSong = Content.Load<Song>("Walking Sax2");
             jazzSong = Content.Load<Song>("Jazz club1 130");
+            bluesJazzSong = Content.Load<Song>("bluesJazzSong");
             MediaPlayer.IsRepeating = true;
             
             cardboardBox = Content.Load<SoundEffect>("cardboardBox");
@@ -364,7 +366,6 @@ namespace CartSim3000
             }
             if (gameState == GameState.GAMEOVER)
             {
-                MediaPlayer.Stop();
                 return;
             }
 
@@ -702,6 +703,7 @@ namespace CartSim3000
                 scoreboard.SaveToXML(scoreboardFilename);
             }
             gameState = GameState.GAMEOVER;
+            MediaPlayer.Play(bluesJazzSong);
         }
 
         /// <summary>
