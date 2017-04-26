@@ -38,6 +38,7 @@
     <ApplicationIcon>Icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Billboard.cs" />
     <Compile Include="BoundingBoxCollider.cs" />
     <Compile Include="BoundingBoxGroupCollider.cs" />
     <Compile Include="BoundingBoxOverlay.cs" />
@@ -49,9 +50,7 @@
     <Compile Include="Lamp.cs" />
     <Compile Include="LArmAnimations.cs" />
     <Compile Include="MeshCollider.cs" />
-    <Compile Include="NamePrompt.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Include="NamePrompt.cs" />
     <Compile Include="NamePrompt.Designer.cs">
       <DependentUpon>NamePrompt.cs</DependentUpon>
     </Compile>
