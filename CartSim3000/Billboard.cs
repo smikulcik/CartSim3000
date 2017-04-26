@@ -17,8 +17,13 @@ namespace CartSim3000
         Texture2D texture;
         BasicEffect effect;
 
-        public Billboard(Texture2D tex, GraphicsDevice graphics)
+        GraphicsDevice graphics;
+
+        public Billboard(Texture2D tex, GraphicsDevice graphics, Vector3 position, Quaternion quat, float scale)
+            : base(position, quat, scale, null)
         {
+            this.graphics = graphics;
+
             texture = tex;
             effect = new BasicEffect(graphics);
             generateData();
@@ -26,21 +31,30 @@ namespace CartSim3000
 
         public void generateData()
         {
+            float aspectRatio = (texture.Width/2f)/ (float)texture.Height;
+
             verts = new VertexPositionNormalTexture[]
             {
+                //front
                 new VertexPositionNormalTexture(new Vector3(0, 0, 0), new Vector3(1, 0, 0), new Vector2(0,1) ),
-                new VertexPositionNormalTexture(new Vector3(1, 0, 0), new Vector3(1, 0, 0), new Vector2(1,1) ),
-                new VertexPositionNormalTexture(new Vector3(1, 1, 0), new Vector3(1, 0, 0), new Vector2(1,0) ),
-                new VertexPositionNormalTexture(new Vector3(0, 1, 0), new Vector3(1, 0, 0), new Vector2(0,0) )
+                new VertexPositionNormalTexture(new Vector3(aspectRatio, 0, 0), new Vector3(1, 0, 0), new Vector2(.5f,1) ),
+                new VertexPositionNormalTexture(new Vector3(aspectRatio, 1, 0), new Vector3(1, 0, 0), new Vector2(.5f,0) ),
+                new VertexPositionNormalTexture(new Vector3(0, 1, 0), new Vector3(1, 0, 0), new Vector2(0,0) ),
+
+                //back
+                new VertexPositionNormalTexture(new Vector3(aspectRatio, 0, 0), new Vector3(1, 0, 0), new Vector2(.5f,1) ),
+                new VertexPositionNormalTexture(new Vector3(0, 0, 0), new Vector3(1, 0, 0), new Vector2(1,1) ),
+                new VertexPositionNormalTexture(new Vector3(0, 1, 0), new Vector3(1, 0, 0), new Vector2(1,0) ),
+                new VertexPositionNormalTexture(new Vector3(aspectRatio, 1, 0), new Vector3(1, 0, 0), new Vector2(.5f,0) )
             };
 
             idxs = new short[]
             {
-                0,1, 2, 0, 2, 3
+                0,1, 2, 0, 2, 3, 4, 5, 6, 4, 6, 7
             };
         }
 
-        public void Draw(GameTime gameTime, GraphicsDevice graphics, Camera cam, Lamp lamp)
+        public override void Draw(GameTime gameTime, Camera cam, Lamp lamp)
         {
             Lamp lamp2 = new Lamp(new Vector3(-30, 30, -30));
 
@@ -62,8 +76,8 @@ namespace CartSim3000
 
                 graphics.DrawUserIndexedPrimitives<VertexPositionNormalTexture>(
                     PrimitiveType.TriangleList,
-                    verts, 0, 4,
-                    idxs, 0, 2
+                    verts, 0, 8,
+                    idxs, 0, 4
                 );
             }
         }

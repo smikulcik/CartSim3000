@@ -44,6 +44,8 @@ namespace CartSim3000
         GameObject walls;
         GameObject larm, rarm;
 
+        Billboard crowd;
+
         //animators
         LArmAnimations larmAnimator;
         RArmAnimations rarmAnimator;
@@ -167,6 +169,8 @@ namespace CartSim3000
             models["Larm"] = Content.Load<Model>("Larm");
             models["Rarm"] = Content.Load<Model>("Rarm");
 
+            Texture2D crowd_woman_tex = Content.Load<Texture2D>("personBillboard_woman");
+            crowd = new Billboard(crowd_woman_tex, GraphicsDevice, new Vector3(0,0,-2), Quaternion.CreateFromAxisAngle(Vector3.Up, MathHelper.Pi), 1);
 
             // Add game specific objectss
             floor = new GameObject(new Vector3(0, -1f, 0), Quaternion.Identity, 1f, models["floor"]);
@@ -809,6 +813,9 @@ namespace CartSim3000
 
         private void DrawGame(GameTime gameTime)
         {
+
+            GraphicsDevice.BlendState = BlendState.AlphaBlend;
+
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             foreach (GameObject g in gameObjects)
@@ -835,6 +842,8 @@ namespace CartSim3000
             cart.Draw(gameTime, cam, lamp);
             larm.Draw(gameTime, cam, lamp);
             rarm.Draw(gameTime, cam, lamp);
+
+            crowd.Draw(gameTime, cam, lamp);
 
             /*foreach (BoundingBox bb in cart.Collider.BBGroup)
             {
