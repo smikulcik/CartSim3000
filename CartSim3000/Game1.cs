@@ -44,7 +44,7 @@ namespace CartSim3000
         GameObject walls;
         GameObject larm, rarm;
 
-        Billboard crowd;
+        List<Billboard> crowd;
 
         //animators
         LArmAnimations larmAnimator;
@@ -91,7 +91,7 @@ namespace CartSim3000
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
-            graphics.IsFullScreen = true;
+            //graphics.IsFullScreen = true;
 
             graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
             graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
@@ -122,7 +122,8 @@ namespace CartSim3000
 
             gameObjects = new List<GameObject>();
             shelves = new List<GameObject>();
-            
+            crowd = new List<Billboard>();
+
             base.Initialize();
         }
 
@@ -170,7 +171,86 @@ namespace CartSim3000
             models["Rarm"] = Content.Load<Model>("Rarm");
 
             Texture2D crowd_woman_tex = Content.Load<Texture2D>("personBillboard_woman");
-            crowd = new Billboard(crowd_woman_tex, GraphicsDevice, new Vector3(0,0,-2), Quaternion.CreateFromAxisAngle(Vector3.Up, MathHelper.Pi), 1);
+            Texture2D crowd_man_tex = Content.Load<Texture2D>("personBillboard_man");
+
+            Random random = new Random();
+            
+            //back
+
+            for (int j = 0; j < 3; j++)
+            {
+                float offset = 0f;
+                if (j % 2 == 0)
+                    offset = 1f;
+                for (int i = 0; i < 10 + offset; i++)
+                {
+                    if (random.Next() % 2 == 1)
+                    {
+                        crowd.Add(new Billboard(crowd_woman_tex, GraphicsDevice, new Vector3(-10 - offset + i * 2.234f, 4 - 2 * j, -15 + j * 2.2345f), Quaternion.CreateFromAxisAngle(Vector3.Up, MathHelper.Pi), 5));
+                    }
+                    else
+                    {
+                        crowd.Add(new Billboard(crowd_man_tex, GraphicsDevice, new Vector3(-10 - offset + i * 2.234f, 4 - 2 * j, -15 + j * 2.2345f), Quaternion.CreateFromAxisAngle(Vector3.Up, MathHelper.Pi), 5));
+                    }
+                }
+            }
+
+            // left
+            for (int j = 0; j < 3; j++)
+            {
+                float offset = 0f;
+                if (j % 2 == 0)
+                    offset = 1f;
+                for (int i = 0; i < 15 + offset; i++)
+                {
+                    if (random.Next() % 2 == 1)
+                    {
+                        crowd.Add(new Billboard(crowd_woman_tex, GraphicsDevice, new Vector3(20 - j * 2.234f, 4 - 2 * j, -3 - offset + i * 2.2345f), Quaternion.CreateFromAxisAngle(Vector3.Up, MathHelper.Pi), 5));
+                    }
+                    else
+                    {
+                        crowd.Add(new Billboard(crowd_man_tex, GraphicsDevice, new Vector3(20 - j * 2.234f, 4 - 2 * j, -3 - offset + i * 2.2345f), Quaternion.CreateFromAxisAngle(Vector3.Up, MathHelper.Pi), 5));
+                    }
+                }
+            }
+
+            // right
+            for (int j = 0; j < 3; j++)
+            {
+                float offset = 0f;
+                if (j % 2 == 0)
+                    offset = 1f;
+                for (int i = 0; i < 15 + offset; i++)
+                {
+                    if (random.Next() % 2 == 1)
+                    {
+                        crowd.Add(new Billboard(crowd_woman_tex, GraphicsDevice, new Vector3(-20 + j * 2.234f, 4 - 2 * j, -3 - offset + i * 2.2345f), Quaternion.CreateFromAxisAngle(Vector3.Up, MathHelper.Pi), 5));
+                    }
+                    else
+                    {
+                        crowd.Add(new Billboard(crowd_man_tex, GraphicsDevice, new Vector3(-20 + j * 2.234f, 4 - 2 * j, -3 - offset + i * 2.2345f), Quaternion.CreateFromAxisAngle(Vector3.Up, MathHelper.Pi), 5));
+                    }
+                }
+            }
+
+            // front
+            for (int j = 0; j < 3; j++)
+            {
+                float offset = 0f;
+                if (j % 2 == 0)
+                    offset = 1f;
+                for (int i = 0; i < 10 + offset; i++)
+                {
+                    if (random.Next() % 2 == 1)
+                    {
+                        crowd.Add(new Billboard(crowd_woman_tex, GraphicsDevice, new Vector3(-10 - offset + i * 2.234f, 4 - 2 * j, 40 - j * 2.2345f), Quaternion.CreateFromAxisAngle(Vector3.Up, MathHelper.Pi), 5));
+                    }
+                    else
+                    {
+                        crowd.Add(new Billboard(crowd_man_tex, GraphicsDevice, new Vector3(-10 - offset + i * 2.234f, 4 - 2 * j, 40 - j * 2.2345f), Quaternion.CreateFromAxisAngle(Vector3.Up, MathHelper.Pi), 5));
+                    }
+                }
+            }
 
             // Add game specific objectss
             floor = new GameObject(new Vector3(0, -1f, 0), Quaternion.Identity, 1f, models["floor"]);
@@ -399,6 +479,11 @@ namespace CartSim3000
             foreach (GameObject s in shelves)
             {
                 s.Update(gameTime);
+            }
+            foreach(Billboard person in crowd)
+            {
+                person.Update(gameTime);
+                person.Target = cam.Pos;
             }
             #endregion
 
@@ -843,7 +928,10 @@ namespace CartSim3000
             larm.Draw(gameTime, cam, lamp);
             rarm.Draw(gameTime, cam, lamp);
 
-            crowd.Draw(gameTime, cam, lamp);
+            foreach(Billboard person in crowd)
+            {
+                person.Draw(gameTime, cam, lamp);
+            }
 
             /*foreach (BoundingBox bb in cart.Collider.BBGroup)
             {

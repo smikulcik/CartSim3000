@@ -19,14 +19,91 @@ namespace CartSim3000
 
         GraphicsDevice graphics;
 
+        public Vector3 Target = Vector3.Zero;
+
+        //jumping parameters
+        float floorHeight = 0;
+        float timeBetweenJumpsMean = 1;
+        float timeBetweenJumpsSD = 2f;
+        float jumpInitVelMean = 1;
+        float jumpInitVelSD = 2f;
+
+        float initJumpOffset = 0f;
+        float timeBetweenJumps = 1;
+        float jumpInitVel = 1;
+        double lastJumpTime = 0;
+        bool jumping = false;
+
         public Billboard(Texture2D tex, GraphicsDevice graphics, Vector3 position, Quaternion quat, float scale)
             : base(position, quat, scale, null)
         {
             this.graphics = graphics;
 
+            floorHeight = position.Y;
+
             texture = tex;
             effect = new BasicEffect(graphics);
             generateData();
+
+            initJumpOffset = (float)r.NextDouble();
+        }
+
+        public void Update(GameTime gameTime)
+        {
+            if (jumping)
+            {
+                //fall back down
+                Vel += Vector3.Up * -9.8f * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                Pos += Vel * (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+                if(Pos.Y < floorHeight)
+                {
+                    jumping = false;
+                    Pos = new Vector3(Pos.X, floorHeight, Pos.Z);
+
+                    //generate params for next jump
+                    lastJumpTime = gameTime.TotalGameTime.TotalSeconds;
+                    timeBetweenJumps = genRandNum(timeBetweenJumpsMean, timeBetweenJumpsSD);
+                    jumpInitVel = genRandNum(jumpInitVelMean, jumpInitVelSD);
+                }
+            }
+            else
+            {
+                //if not jumping, then consider next jump
+                if(gameTime.TotalGameTime.TotalSeconds - lastJumpTime > timeBetweenJumps && gameTime.TotalGameTime.TotalSeconds > initJumpOffset)
+                {
+                    //jump
+                    jumping = true;
+                    Vel = Vector3.Up * jumpInitVel;
+                }
+            }
+
+            //turn to face target
+            Vector3 myPos = new Vector3(Pos.X, 0, Pos.Z);
+            Vector3 targetPos = new Vector3(Target.X, 0, Target.Z);
+            Vector3 directionVector = Vector3.Normalize(targetPos - myPos);
+
+            Vector3 axis = Vector3.Up;
+            float angle = 0f;
+            if (!directionVector.Equals(Vector3.Forward) && !directionVector.Equals(Vector3.Zero))
+            {
+                axis = Vector3.Normalize(Vector3.Cross(Vector3.Forward, directionVector));
+                angle = (float)Math.Acos(Vector3.Dot(Vector3.Forward, directionVector));
+            }
+
+            Rotation = Quaternion.CreateFromAxisAngle(axis, angle);
+        }
+
+        static Random r = new Random();
+        private float genRandNum(float mean, float sd)
+        {
+            //uniform dist
+            //http://www.itl.nist.gov/div898/handbook/eda/section3/eda3662.htm
+            double width = Math.Sqrt(12 * sd * sd);
+
+            double x = r.NextDouble() - 0.5d;
+
+            return (float)(x * width + mean);
         }
 
         public void generateData()
@@ -58,7 +135,7 @@ namespace CartSim3000
         {
             Lamp lamp2 = new Lamp(new Vector3(-30, 30, -30));
 
-            effect.World = this.World*Matrix.CreateScale(5);
+            effect.World = this.World;
             effect.Projection = cam.getProjMatrix();
             effect.View = cam.getViewMatrix();
             /*effect.EnableDefaultLighting();
