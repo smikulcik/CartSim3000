@@ -93,10 +93,12 @@ namespace CartSim3000
             graphics = new GraphicsDeviceManager(this);
             //graphics.IsFullScreen = true;
 
-            graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
-            graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
+            graphics.PreferredBackBufferWidth = 1920/2;
+            graphics.PreferredBackBufferHeight = 540;
 
             Content.RootDirectory = "Content";
+
+            Window.AllowUserResizing = true;
 
             scoreboard = new Scoreboard();
             try
@@ -822,10 +824,13 @@ namespace CartSim3000
         private void DrawTitleCredits(GameTime gameTime)
         {
 
-            GraphicsDevice.Clear(Color.DarkBlue);
+            GraphicsDevice.Clear(Color.Black);
             spriteBatch.Begin();
 
-            spriteBatch.Draw(startScreen, new Vector2(0, 0), Color.White);
+            int width = Window.ClientBounds.Width;
+
+            spriteBatch.Draw(startScreen, new Vector2(0, 0), null, Color.White, 0f,
+                Vector2.Zero, width/1920f, SpriteEffects.None, 0f);
 
             spriteBatch.End();
             //reset graphics device
@@ -837,10 +842,17 @@ namespace CartSim3000
 
         private void DrawHowToPlay(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.DarkBlue);
+            GraphicsDevice.Clear(Color.Black);
             spriteBatch.Begin();
 
-            spriteBatch.Draw(howToPlayScreen, new Vector2(0, 0), Color.White);
+
+            int width = Window.ClientBounds.Width;
+            int height = Window.ClientBounds.Height;
+            float scale = width / 1920f;
+
+
+            spriteBatch.Draw(howToPlayScreen, new Vector2(0, (height - 1080f*scale)/2), null, Color.White, 0f,
+                Vector2.Zero, scale, SpriteEffects.None, 0f);
 
             spriteBatch.End();
             //reset graphics device
@@ -855,17 +867,30 @@ namespace CartSim3000
             GraphicsDevice.Clear(Color.Black);
             spriteBatch.Begin();
 
+            int width = Window.ClientBounds.Width;
+            float scale = width / 1920f;
+
             spriteBatch.DrawString(
                 letterFont,
                 "Game Over ",
                 new Vector2(300, 20),
-                new Color(34, 184, 221)
+                new Color(34, 184, 221),
+                0,
+                Vector2.Zero,
+                new Vector2(scale),
+                SpriteEffects.None,
+                0
             );
             spriteBatch.DrawString(
                 letterFont,
                 "Score " + score,
                 new Vector2(800, 20),
-                new Color(34, 184, 221)
+                new Color(34, 184, 221),
+                0,
+                Vector2.Zero,
+                new Vector2(scale),
+                SpriteEffects.None,
+                0
             );
             //draw scoreboard
             for(int i = 0; i < scoreboard.Size; i++)
@@ -873,8 +898,13 @@ namespace CartSim3000
                 spriteBatch.DrawString(
                     letterFont,
                     (i + 1) + ".",
-                    new Vector2(100, 150 + i * 70),
-                    new Color(238, 239, 124)
+                    new Vector2(100, 150 + i * 70 * scale),
+                    new Color(238, 239, 124),
+                    0,
+                    Vector2.Zero,
+                    new Vector2(scale),
+                    SpriteEffects.None,
+                    0
                 );
 
                 if (i < scoreboard.Scores.Count)
@@ -882,8 +912,13 @@ namespace CartSim3000
                     spriteBatch.DrawString(
                         letterFont,
                         scoreboard.Scores[i].Name + " " + scoreboard.Scores[i].Value,
-                        new Vector2(200, 150 + i*70),
-                    new Color(238, 239, 124)
+                        new Vector2(200, 150 + i * 70 * scale),
+                        new Color(238, 239, 124),
+                        0,
+                        Vector2.Zero,
+                        new Vector2(scale),
+                        SpriteEffects.None,
+                        0
                     );
                 }
             }
@@ -945,25 +980,44 @@ namespace CartSim3000
             // HUD
             spriteBatch.Begin();
 
+
+            int width = Window.ClientBounds.Width;
+            float scale = width / 1920f;
+
             spriteBatch.DrawString(
                 letterFont,
                 "Time " + Math.Floor(timeLeft),
                 new Vector2(20, 20),
-                new Color(238, 239, 124)
+                new Color(238, 239, 124),
+                0,
+                Vector2.Zero,
+                new Vector2(scale),
+                SpriteEffects.None,
+                0
             );
             Vector3 horizontalVel = cart.Vel - (Vector3.Dot(Vector3.Up, cart.Vel)) * Vector3.Up;
             spriteBatch.DrawString(
                 letterFont,
                 "Speed " + Math.Floor(horizontalVel.Length()) + " ft s",
-                new Vector2(20, 100),
-                new Color(238, 239, 124)
+                new Vector2(20, 20+80*scale),
+                new Color(238, 239, 124),
+                0,
+                Vector2.Zero,
+                new Vector2(scale),
+                SpriteEffects.None,
+                0
             );
 
             spriteBatch.DrawString(
                 letterFont,
                 "Score " + score,
-                new Vector2(20, 180),
-                new Color(238, 239, 124)
+                new Vector2(20, 20 + 2*80 * scale),
+                new Color(238, 239, 124),
+                0,
+                Vector2.Zero,
+                new Vector2(scale),
+                SpriteEffects.None,
+                0
             );
             spriteBatch.End();
             //reset graphics device
