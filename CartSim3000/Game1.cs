@@ -51,7 +51,7 @@ namespace CartSim3000
         RArmAnimations rarmAnimator;
 
         // state vars
-        float timeLeft = 30f;
+        float timeLeft = 60f;
         int score = 0; //score in number of boxes in cart
         enum GameState
         {
