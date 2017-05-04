@@ -91,7 +91,7 @@ namespace CartSim3000
                 angle = (float)Math.Acos(Vector3.Dot(Vector3.Forward, directionVector));
             }
 
-            Rotation = Quaternion.CreateFromAxisAngle(axis, angle);
+            Rotation = Quaternion.Slerp(Rotation, Quaternion.CreateFromAxisAngle(axis, angle), .01f);
         }
 
         static Random r = new Random();

@@ -224,11 +224,11 @@ namespace CartSim3000
                     crowdNoises.Add(crowdEmitter);
                     if (random.Next() % 2 == 1)
                     {
-                        crowd.Add(new Billboard(crowd_woman_tex, GraphicsDevice, new Vector3(20 - j * 2.234f, 4 - 2 * j, -3 - offset + i * 2.2345f), Quaternion.CreateFromAxisAngle(Vector3.Up, MathHelper.Pi), 5));
+                        crowd.Add(new Billboard(crowd_woman_tex, GraphicsDevice, new Vector3(20 - j * 2.234f, 4 - 2 * j, -3 - offset + i * 2.2345f), Quaternion.CreateFromAxisAngle(Vector3.Up, MathHelper.PiOver2), 5));
                     }
                     else
                     {
-                        crowd.Add(new Billboard(crowd_man_tex, GraphicsDevice, new Vector3(20 - j * 2.234f, 4 - 2 * j, -3 - offset + i * 2.2345f), Quaternion.CreateFromAxisAngle(Vector3.Up, MathHelper.Pi), 5));
+                        crowd.Add(new Billboard(crowd_man_tex, GraphicsDevice, new Vector3(20 - j * 2.234f, 4 - 2 * j, -3 - offset + i * 2.2345f), Quaternion.CreateFromAxisAngle(Vector3.Up, MathHelper.PiOver2), 5));
                     }
                 }
             }
@@ -246,11 +246,11 @@ namespace CartSim3000
                     crowdNoises.Add(crowdEmitter);
                     if (random.Next() % 2 == 1)
                     {
-                        crowd.Add(new Billboard(crowd_woman_tex, GraphicsDevice, new Vector3(-20 + j * 2.234f, 4 - 2 * j, -3 - offset + i * 2.2345f), Quaternion.CreateFromAxisAngle(Vector3.Up, MathHelper.Pi), 5));
+                        crowd.Add(new Billboard(crowd_woman_tex, GraphicsDevice, new Vector3(-20 + j * 2.234f, 4 - 2 * j, -3 - offset + i * 2.2345f), Quaternion.CreateFromAxisAngle(Vector3.Up, -MathHelper.PiOver2), 5));
                     }
                     else
                     {
-                        crowd.Add(new Billboard(crowd_man_tex, GraphicsDevice, new Vector3(-20 + j * 2.234f, 4 - 2 * j, -3 - offset + i * 2.2345f), Quaternion.CreateFromAxisAngle(Vector3.Up, MathHelper.Pi), 5));
+                        crowd.Add(new Billboard(crowd_man_tex, GraphicsDevice, new Vector3(-20 + j * 2.234f, 4 - 2 * j, -3 - offset + i * 2.2345f), Quaternion.CreateFromAxisAngle(Vector3.Up, -MathHelper.PiOver2), 5));
                     }
                 }
             }
@@ -269,11 +269,11 @@ namespace CartSim3000
 
                     if (random.Next() % 2 == 1)
                     {
-                        crowd.Add(new Billboard(crowd_woman_tex, GraphicsDevice, new Vector3(-10 - offset + i * 2.234f, 4 - 2 * j, 40 - j * 2.2345f), Quaternion.CreateFromAxisAngle(Vector3.Up, MathHelper.Pi), 5));
+                        crowd.Add(new Billboard(crowd_woman_tex, GraphicsDevice, new Vector3(-10 - offset + i * 2.234f, 4 - 2 * j, 40 - j * 2.2345f), Quaternion.Identity, 5));
                     }
                     else
                     {
-                        crowd.Add(new Billboard(crowd_man_tex, GraphicsDevice, new Vector3(-10 - offset + i * 2.234f, 4 - 2 * j, 40 - j * 2.2345f), Quaternion.CreateFromAxisAngle(Vector3.Up, MathHelper.Pi), 5));
+                        crowd.Add(new Billboard(crowd_man_tex, GraphicsDevice, new Vector3(-10 - offset + i * 2.234f, 4 - 2 * j, 40 - j * 2.2345f), Quaternion.Identity, 5));
                     }
                 }
             }
