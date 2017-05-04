@@ -14,6 +14,12 @@ namespace CartSim3000
         VertexPositionNormalTexture[] verts;
         short[] idxs;
 
+        Texture2D[] frames;
+        int curFrame = 0;
+        int count = 1;
+        int framesX = 1;
+        int framesY = 1;
+
         Texture2D texture;
         BasicEffect effect;
 
@@ -34,12 +40,40 @@ namespace CartSim3000
         double lastJumpTime = 0;
         bool jumping = false;
 
+        public int CurFrame
+        {
+            get { return curFrame; }
+            set {
+                curFrame = value % count;
+                generateData();
+            }
+        }
+
         public Billboard(Texture2D tex, GraphicsDevice graphics, Vector3 position, Quaternion quat, float scale)
             : base(position, quat, scale, null)
         {
             this.graphics = graphics;
 
             floorHeight = position.Y;
+
+            texture = tex;
+            effect = new BasicEffect(graphics);
+            generateData();
+
+            initJumpOffset = (float)r.NextDouble();
+        }
+
+        // animated billboard constructor
+        public Billboard(Texture2D tex, GraphicsDevice graphics, int framesX, int framesY, int count, Vector3 position, Quaternion quat, float scale)
+            : base(position, quat, scale, null)
+        {
+            this.graphics = graphics;
+
+            floorHeight = position.Y;
+
+            this.framesX = framesX;
+            this.framesY = framesY;
+            this.count = count;
 
             texture = tex;
             effect = new BasicEffect(graphics);
@@ -66,6 +100,8 @@ namespace CartSim3000
                     timeBetweenJumps = genRandNum(timeBetweenJumpsMean, timeBetweenJumpsSD);
                     jumpInitVel = genRandNum(jumpInitVelMean, jumpInitVelSD);
                 }
+
+                CurFrame = (int)gameTime.TotalGameTime.TotalSeconds;
             }
             else
             {
@@ -110,19 +146,28 @@ namespace CartSim3000
         {
             float aspectRatio = (texture.Width/2f)/ (float)texture.Height;
 
+            float frameWidth = texture.Width / framesX;
+            float frameHeight = texture.Height / framesY;
+            int frameXind = curFrame % framesX;
+            int frameYind = curFrame / framesX;
+            if(curFrame > 0)
+            {
+                 Vector2 x = new Vector2(frameXind / framesX, (frameYind + 1) / framesY);
+            }
+
             verts = new VertexPositionNormalTexture[]
             {
                 //front
-                new VertexPositionNormalTexture(new Vector3(-aspectRatio/2, 0, 0), new Vector3(1, 0, 0), new Vector2(0,1) ),
-                new VertexPositionNormalTexture(new Vector3(aspectRatio/2, 0, 0), new Vector3(1, 0, 0), new Vector2(.5f,1) ),
-                new VertexPositionNormalTexture(new Vector3(aspectRatio/2, 1, 0), new Vector3(1, 0, 0), new Vector2(.5f,0) ),
-                new VertexPositionNormalTexture(new Vector3(-aspectRatio/2, 1, 0), new Vector3(1, 0, 0), new Vector2(0,0) ),
+                new VertexPositionNormalTexture(new Vector3(-aspectRatio/2, 0, 0), new Vector3(1, 0, 0), new Vector2(frameXind/(float)framesX, (frameYind+1)/(float)framesY) ),
+                new VertexPositionNormalTexture(new Vector3(aspectRatio/2, 0, 0), new Vector3(1, 0, 0), new Vector2((frameXind + .5f)/framesX, (frameYind+1)/(float)framesY) ),
+                new VertexPositionNormalTexture(new Vector3(aspectRatio/2, 1, 0), new Vector3(1, 0, 0), new Vector2((frameXind + .5f)/framesX, frameYind/(float)framesY) ),
+                new VertexPositionNormalTexture(new Vector3(-aspectRatio/2, 1, 0), new Vector3(1, 0, 0), new Vector2(frameXind/(float)framesX, frameYind/(float)framesY) ),
 
-                //back
-                new VertexPositionNormalTexture(new Vector3(aspectRatio/2, 0, 0), new Vector3(1, 0, 0), new Vector2(.5f,1) ),
-                new VertexPositionNormalTexture(new Vector3(-aspectRatio/2, 0, 0), new Vector3(1, 0, 0), new Vector2(1,1) ),
-                new VertexPositionNormalTexture(new Vector3(-aspectRatio/2, 1, 0), new Vector3(1, 0, 0), new Vector2(1,0) ),
-                new VertexPositionNormalTexture(new Vector3(aspectRatio/2, 1, 0), new Vector3(1, 0, 0), new Vector2(.5f,0) )
+                //back 
+                new VertexPositionNormalTexture(new Vector3(aspectRatio/2, 0, 0), new Vector3(1, 0, 0), new Vector2((frameXind + .5f)/framesX, (frameYind+1)/(float)framesY) ),
+                new VertexPositionNormalTexture(new Vector3(-aspectRatio/2, 0, 0), new Vector3(1, 0, 0), new Vector2((frameXind + 1)/(float)framesX, (frameYind+1)/(float)framesY) ),
+                new VertexPositionNormalTexture(new Vector3(-aspectRatio/2, 1, 0), new Vector3(1, 0, 0), new Vector2((frameXind + 1)/(float)framesX, frameYind/(float)framesY) ),
+                new VertexPositionNormalTexture(new Vector3(aspectRatio/2, 1, 0), new Vector3(1, 0, 0), new Vector2((frameXind + .5f)/framesX,  frameYind/(float)framesY) )
             };
 
             idxs = new short[]
