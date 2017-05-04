@@ -912,7 +912,7 @@ namespace CartSim3000
             spriteBatch.DrawString(
                 letterFont,
                 "Game Over ",
-                new Vector2(300, 20),
+                new Vector2(300*scale, 20),
                 new Color(34, 184, 221),
                 0,
                 Vector2.Zero,
@@ -923,7 +923,7 @@ namespace CartSim3000
             spriteBatch.DrawString(
                 letterFont,
                 "Score " + score,
-                new Vector2(800, 20),
+                new Vector2(800*scale, 20),
                 new Color(34, 184, 221),
                 0,
                 Vector2.Zero,
