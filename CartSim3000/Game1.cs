@@ -809,6 +809,10 @@ namespace CartSim3000
                     box.Pos.Z > cart.Pos.Z - 0.5 &&
                     box.Pos.Z < cart.Pos.Z + 5.5)
                 {
+                    //if in cart, collect box if not already collected
+                    if(box.Parent == null)
+                        box.Parent = cart;
+
                     // 1 pt for yellow box, 5 pts for blue box
                     if (box.Model == models["cerealBox"])
                         count++;

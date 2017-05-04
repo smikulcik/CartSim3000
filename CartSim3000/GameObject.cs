@@ -20,6 +20,19 @@ namespace CartSim3000
         private BoundingBoxGroupCollider collider;
         private bool immovable = false;
 
+        private GameObject parent = null;
+
+        public GameObject Parent
+        {
+            get { return parent; }
+            set
+            {
+                parent = value;
+                //convert pos into relative
+                position = position - parent.Pos;
+            }
+        }
+
         public float Friction
         {
             get
@@ -95,11 +108,24 @@ namespace CartSim3000
 
         public Vector3 Pos
         {
-            get { return position; }
-            set {
+            get {
+                if (parent != null)
+                    return parent.Pos + position;
+                else
+                    return position;
+            }
+            set
+            {
                 if (float.IsNaN(value.X) || float.IsNaN(value.Y) || float.IsNaN(value.Z))
                     throw new ArgumentOutOfRangeException("must not be NaN");
-                position = value; }
+                if (parent != null)
+                {
+                    //convert abs pos to relative
+                    position = value - parent.Pos;
+                }
+                else
+                    position = value;
+            }
         }
         public Vector3 Vel
         {
@@ -148,7 +174,7 @@ namespace CartSim3000
                 return (
                     Matrix.CreateScale(scale) *
                     Matrix.CreateFromQuaternion(rotation) *
-                    Matrix.CreateTranslation(position)
+                    Matrix.CreateTranslation(Pos)
                 );
             }
         }
