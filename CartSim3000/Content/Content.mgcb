@@ -293,3 +293,9 @@
 /processorParam:TextureFormat=Color
 /build:personBillboard_man.png
 
+#begin crowd_noises.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:crowd_noises.mp3
+

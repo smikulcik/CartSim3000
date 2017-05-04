@@ -79,11 +79,17 @@ namespace CartSim3000
         SoundEffect metalDragSound;
         SoundEffectInstance metalDragInstance;
 
+        SoundEffect crowdSound;
+        List<SoundEmitter> crowdNoises;
+
         SoundEffect cardboardBox;
 
         Song introJazzSong;
         Song jazzSong;
         Song bluesJazzSong;
+
+        AudioEmitter emitter = new AudioEmitter();
+        AudioListener listener = new AudioListener();
 
         Scoreboard scoreboard;
         string scoreboardFilename = "scoreboard.xml";
@@ -125,6 +131,7 @@ namespace CartSim3000
             gameObjects = new List<GameObject>();
             shelves = new List<GameObject>();
             crowd = new List<Billboard>();
+            crowdNoises = new List<SoundEmitter>();
 
             base.Initialize();
         }
@@ -155,6 +162,8 @@ namespace CartSim3000
             metalDragSound = Content.Load<SoundEffect>("metal_drag");
             metalDragInstance = metalDragSound.CreateInstance();
 
+            crowdSound = Content.Load<SoundEffect>("crowd_noises");
+
             introJazzSong = Content.Load<Song>("Walking Sax2");
             jazzSong = Content.Load<Song>("Jazz club1 130");
             bluesJazzSong = Content.Load<Song>("bluesJazzSong");
@@ -176,9 +185,9 @@ namespace CartSim3000
             Texture2D crowd_man_tex = Content.Load<Texture2D>("personBillboard_man");
 
             Random random = new Random();
-            
-            //back
 
+            SoundEmitter crowdEmitter;
+            //back
             for (int j = 0; j < 3; j++)
             {
                 float offset = 0f;
@@ -186,6 +195,11 @@ namespace CartSim3000
                     offset = 1f;
                 for (int i = 0; i < 10 + offset; i++)
                 {
+
+                    crowdEmitter = new SoundEmitter(crowdSound, new Vector3(-10 - offset + i * 2.234f, 4 - 2 * j, -15 + j * 2.2345f));
+                    crowdEmitter.soundEffectInstance.IsLooped = true;
+                    crowdNoises.Add(crowdEmitter);
+
                     if (random.Next() % 2 == 1)
                     {
                         crowd.Add(new Billboard(crowd_woman_tex, GraphicsDevice, new Vector3(-10 - offset + i * 2.234f, 4 - 2 * j, -15 + j * 2.2345f), Quaternion.CreateFromAxisAngle(Vector3.Up, MathHelper.Pi), 5));
@@ -205,6 +219,9 @@ namespace CartSim3000
                     offset = 1f;
                 for (int i = 0; i < 15 + offset; i++)
                 {
+                    crowdEmitter = new SoundEmitter(crowdSound, new Vector3(20 - j * 2.234f, 4 - 2 * j, -3 - offset + i * 2.2345f));
+                    crowdEmitter.soundEffectInstance.IsLooped = true;
+                    crowdNoises.Add(crowdEmitter);
                     if (random.Next() % 2 == 1)
                     {
                         crowd.Add(new Billboard(crowd_woman_tex, GraphicsDevice, new Vector3(20 - j * 2.234f, 4 - 2 * j, -3 - offset + i * 2.2345f), Quaternion.CreateFromAxisAngle(Vector3.Up, MathHelper.Pi), 5));
@@ -224,6 +241,9 @@ namespace CartSim3000
                     offset = 1f;
                 for (int i = 0; i < 15 + offset; i++)
                 {
+                    crowdEmitter = new SoundEmitter(crowdSound, new Vector3(-20 + j * 2.234f, 4 - 2 * j, -3 - offset + i * 2.2345f));
+                    crowdEmitter.soundEffectInstance.IsLooped = true;
+                    crowdNoises.Add(crowdEmitter);
                     if (random.Next() % 2 == 1)
                     {
                         crowd.Add(new Billboard(crowd_woman_tex, GraphicsDevice, new Vector3(-20 + j * 2.234f, 4 - 2 * j, -3 - offset + i * 2.2345f), Quaternion.CreateFromAxisAngle(Vector3.Up, MathHelper.Pi), 5));
@@ -243,6 +263,10 @@ namespace CartSim3000
                     offset = 1f;
                 for (int i = 0; i < 10 + offset; i++)
                 {
+                    crowdEmitter = new SoundEmitter(crowdSound, new Vector3(-10 - offset + i * 2.234f, 4 - 2 * j, 40 - j * 2.2345f));
+                    crowdEmitter.soundEffectInstance.IsLooped = true;
+                    crowdNoises.Add(crowdEmitter);
+
                     if (random.Next() % 2 == 1)
                     {
                         crowd.Add(new Billboard(crowd_woman_tex, GraphicsDevice, new Vector3(-10 - offset + i * 2.234f, 4 - 2 * j, 40 - j * 2.2345f), Quaternion.CreateFromAxisAngle(Vector3.Up, MathHelper.Pi), 5));
@@ -733,6 +757,17 @@ namespace CartSim3000
 
             #endregion
 
+            #region update sounds
+            listener.Position = cam.Pos;
+
+            foreach(SoundEmitter e in crowdNoises)
+            {
+                e.Update(listener);
+                if(e.soundEffectInstance.State != SoundState.Playing)
+                    e.Play();
+            }
+
+            #endregion
 
             #region play sound effects
             float forwardVel = Vector3.Dot(forward, cart.Vel);
