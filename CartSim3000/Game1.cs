@@ -476,6 +476,18 @@ namespace CartSim3000
             }
             if (gameState == GameState.GAMEOVER)
             {
+                if (Keyboard.GetState().IsKeyDown(Keys.Enter))
+                {
+                    enterDown = true;
+                }
+                else
+                {
+                    if (enterDown)
+                    {
+                        Exit();
+                    }
+                    enterDown = false;
+                }
                 return;
             }
 
