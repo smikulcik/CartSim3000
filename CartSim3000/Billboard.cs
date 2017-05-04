@@ -113,16 +113,16 @@ namespace CartSim3000
             verts = new VertexPositionNormalTexture[]
             {
                 //front
-                new VertexPositionNormalTexture(new Vector3(0, 0, 0), new Vector3(1, 0, 0), new Vector2(0,1) ),
-                new VertexPositionNormalTexture(new Vector3(aspectRatio, 0, 0), new Vector3(1, 0, 0), new Vector2(.5f,1) ),
-                new VertexPositionNormalTexture(new Vector3(aspectRatio, 1, 0), new Vector3(1, 0, 0), new Vector2(.5f,0) ),
-                new VertexPositionNormalTexture(new Vector3(0, 1, 0), new Vector3(1, 0, 0), new Vector2(0,0) ),
+                new VertexPositionNormalTexture(new Vector3(-aspectRatio/2, 0, 0), new Vector3(1, 0, 0), new Vector2(0,1) ),
+                new VertexPositionNormalTexture(new Vector3(aspectRatio/2, 0, 0), new Vector3(1, 0, 0), new Vector2(.5f,1) ),
+                new VertexPositionNormalTexture(new Vector3(aspectRatio/2, 1, 0), new Vector3(1, 0, 0), new Vector2(.5f,0) ),
+                new VertexPositionNormalTexture(new Vector3(-aspectRatio/2, 1, 0), new Vector3(1, 0, 0), new Vector2(0,0) ),
 
                 //back
-                new VertexPositionNormalTexture(new Vector3(aspectRatio, 0, 0), new Vector3(1, 0, 0), new Vector2(.5f,1) ),
-                new VertexPositionNormalTexture(new Vector3(0, 0, 0), new Vector3(1, 0, 0), new Vector2(1,1) ),
-                new VertexPositionNormalTexture(new Vector3(0, 1, 0), new Vector3(1, 0, 0), new Vector2(1,0) ),
-                new VertexPositionNormalTexture(new Vector3(aspectRatio, 1, 0), new Vector3(1, 0, 0), new Vector2(.5f,0) )
+                new VertexPositionNormalTexture(new Vector3(aspectRatio/2, 0, 0), new Vector3(1, 0, 0), new Vector2(.5f,1) ),
+                new VertexPositionNormalTexture(new Vector3(-aspectRatio/2, 0, 0), new Vector3(1, 0, 0), new Vector2(1,1) ),
+                new VertexPositionNormalTexture(new Vector3(-aspectRatio/2, 1, 0), new Vector3(1, 0, 0), new Vector2(1,0) ),
+                new VertexPositionNormalTexture(new Vector3(aspectRatio/2, 1, 0), new Vector3(1, 0, 0), new Vector2(.5f,0) )
             };
 
             idxs = new short[]
