@@ -43,6 +43,7 @@ namespace CartSim3000
         GameObject[] ceiling;
         GameObject walls;
         GameObject larm, rarm;
+        GameObject lleg, rleg;
 
         List<Billboard> crowd;
 
@@ -180,6 +181,8 @@ namespace CartSim3000
             models["shelf"] = Content.Load<Model>("shelf");
             models["Larm"] = Content.Load<Model>("Larm");
             models["Rarm"] = Content.Load<Model>("Rarm");
+            models["Lleg"] = Content.Load<Model>("Lleg");
+            models["Rleg"] = Content.Load<Model>("Rleg");
 
             Texture2D crowd_woman_tex = Content.Load<Texture2D>("personBillboard_woman");
             Texture2D crowd_man_tex = Content.Load<Texture2D>("personBillboard_man");
@@ -319,6 +322,18 @@ namespace CartSim3000
 
             larmAnimator = new LArmAnimations(larm);
             rarmAnimator = new RArmAnimations(rarm);
+
+            //legs
+            lleg = new GameObject(
+                new Vector3(0, 0, -1.25f), Quaternion.Identity,
+                .03f,
+                models["Lleg"]);
+            rleg = new GameObject(
+                new Vector3(0, 0, -1.25f), Quaternion.Identity,
+                .03f,
+                models["Rleg"]);
+            lleg.Parent = cart;
+            rleg.Parent = cart;
 
             Random r = new Random();
 
@@ -633,6 +648,7 @@ namespace CartSim3000
                 if (eKeyDown == false)
                 {
                     // On e key release
+                    StompGround();
                     Console.WriteLine("E key pressed");
                 }
                 eKeyDown = true;
@@ -806,6 +822,20 @@ namespace CartSim3000
 
             wasActiveLastUpdate = true;
             base.Update(gameTime);
+        }
+
+        private void StompGround()
+        {
+            foreach(GameObject box in gameObjects)
+            {
+                if ((box.Pos - cart.Pos).Length() < 5)
+                {
+                    if (box.Parent == null)
+                    {
+                        box.Vel = Vector3.Up * 10;
+                    }
+                }
+            }
         }
 
         private void UpdateScore()
@@ -1013,8 +1043,10 @@ namespace CartSim3000
             cart.Draw(gameTime, cam, lamp);
             larm.Draw(gameTime, cam, lamp);
             rarm.Draw(gameTime, cam, lamp);
+            lleg.Draw(gameTime, cam, lamp);
+            rleg.Draw(gameTime, cam, lamp);
 
-            foreach(Billboard person in crowd)
+            foreach (Billboard person in crowd)
             {
                 person.Draw(gameTime, cam, lamp);
             }
