@@ -114,7 +114,17 @@ namespace CartSim3000
             catch(FileNotFoundException e)
             {
                 // no save file was found, a new one will be generated
-                //pass
+                scoreboard.addScore(new ScoreboardEntry("Simon", 60));
+                scoreboard.addScore(new ScoreboardEntry("Ben", 55));
+                scoreboard.addScore(new ScoreboardEntry("Jeremy", 50));
+                scoreboard.addScore(new ScoreboardEntry("Deen", 45));
+                scoreboard.addScore(new ScoreboardEntry("George", 40));
+                scoreboard.addScore(new ScoreboardEntry("David", 35));
+                scoreboard.addScore(new ScoreboardEntry("Brett", 30));
+                scoreboard.addScore(new ScoreboardEntry("Jonathan", 25));
+                scoreboard.addScore(new ScoreboardEntry("Joel", 20));
+                scoreboard.addScore(new ScoreboardEntry("Aaron", 15));
+                scoreboard.SaveToXML(scoreboardFilename);
             }
         }
 
